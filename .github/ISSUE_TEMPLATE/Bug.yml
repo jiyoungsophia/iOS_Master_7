@@ -23,3 +23,11 @@ body:
       value: "- [ ] "
     validations:
       required: false
+  - type: textarea
+    id: branch
+    attributes:
+      label: 🐶 Branch Name
+      description: 해당 이슈와 관련된 작업을 진행할 브랜치명을 작성해 주세요.
+      value: "bug/#?-"
+    validations:
+      required: false
