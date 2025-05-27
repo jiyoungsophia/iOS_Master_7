@@ -37,15 +37,18 @@ struct BaseballGame {
     }
     
     func makeAnswer() -> [Int] {
-        var numbers: Set<Int> = []
-        while numbers.count < 3 {
-            numbers.insert(Int.random(in: 1...9))
+        var answer = Array(0...9).shuffled()
+        
+        if answer[0] == 0 {
+            answer.swapAt(0, Int.random(in: 1...9))
         }
         
-        return Array(numbers)
+        let result = Array(answer.prefix(3))
+        
+        return result
     }
     
-    func validateInput(_ input: String) -> [Int]? { // enum switch문 처리하면 과할까?
+    func validateInput(_ input: String) -> [Int]? {
         guard input.count == 3 else {
             return nil
         }
@@ -92,6 +95,4 @@ struct BaseballGame {
             return "Nothing!"
         }
     }
-    
-    
 }
