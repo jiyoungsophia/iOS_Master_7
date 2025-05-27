@@ -9,7 +9,45 @@ import Foundation
 
 
 struct BaseballGame {
-    func start() {
+    func run() {
+        print("환영합니다! 원하시는 번호를 입력해주세요")
+        
+        while true {
+            print("1. 게임 시작하기  2. 게임 기록 보기  3. 종료하기")
+            
+            guard let input = readLine(),
+                 let number = Int(input) else {
+                print("다시 입력해주세요")
+                continue
+            }
+            
+            switch number {
+            case 1:
+                startGame()
+            case 2:
+                print("2. 게임 기록 보기")
+            case 3:
+                print("게임을 종료합니다")
+                return
+            default:
+                print("다시 입력해주세요")
+            }
+        }
+    }
+    
+    func makeAnswer() -> [Int] {
+        var answer = Array(0...9).shuffled()
+        
+        if answer[0] == 0 {
+            answer.swapAt(0, Int.random(in: 1...9))
+        }
+        
+        let result = Array(answer.prefix(3))
+        
+        return result
+    }
+    
+    func startGame() {
         let answer = makeAnswer()
         print("< 게임을 시작합니다 >")
         
@@ -34,18 +72,6 @@ struct BaseballGame {
             let hint = getHint(comparing: numbers, with: answer)
             print(hint)
         }
-    }
-    
-    func makeAnswer() -> [Int] {
-        var answer = Array(0...9).shuffled()
-        
-        if answer[0] == 0 {
-            answer.swapAt(0, Int.random(in: 1...9))
-        }
-        
-        let result = Array(answer.prefix(3))
-        
-        return result
     }
     
     func validateInput(_ input: String) -> [Int]? {
