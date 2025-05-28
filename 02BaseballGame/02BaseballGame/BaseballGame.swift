@@ -9,6 +9,8 @@ import Foundation
 
 
 struct BaseballGame {
+    private let recordManager = RecordManager()
+    
     func run() {
         print("환영합니다! 원하시는 번호를 입력해주세요")
         
@@ -25,7 +27,7 @@ struct BaseballGame {
             case 1:
                 startGame()
             case 2:
-                print("2. 게임 기록 보기")
+                recordManager.showRecords()
             case 3:
                 print("게임을 종료합니다")
                 return
@@ -49,10 +51,13 @@ struct BaseballGame {
     
     func startGame() {
         let answer = makeAnswer()
+        var attemptCount = 0
+        
         print("< 게임을 시작합니다 >")
         
         while true {
             print("숫자를 입력하세요")
+            attemptCount += 1
             
             guard let input = readLine() else {
                 print("올바르지 않은 입력값입니다")
@@ -66,6 +71,7 @@ struct BaseballGame {
             
             if numbers == answer {
                 print("정답입니다!")
+                recordManager.addRecord(attempts: attemptCount)
                 break
             }
             
