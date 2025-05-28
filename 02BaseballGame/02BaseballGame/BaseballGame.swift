@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 struct BaseballGame {
     private let gameLogic = BaseballGameLogic()
     private let recordManager = RecordManager()
@@ -19,7 +18,7 @@ struct BaseballGame {
             print("1. 게임 시작하기  2. 게임 기록 보기  3. 종료하기")
             
             guard let input = readLine(),
-                 let number = Int(input) else {
+                  let number = Int(input) else {
                 print("다시 입력해주세요")
                 continue
             }
@@ -30,10 +29,10 @@ struct BaseballGame {
             case 2:
                 recordManager.showRecords()
             case 3:
-                print("게임을 종료합니다")
+                print("< 숫자 야구 게임을 종료합니다 >")
                 return
             default:
-                print("다시 입력해주세요")
+                print("올바른 숫자를 입력해주세요!")
             }
         }
     }
