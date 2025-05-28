@@ -59,7 +59,7 @@ struct BaseballGame {
         
         let numbers = input.compactMap { Int(String($0)) }
         
-        guard !numbers.contains(0) else {
+        guard numbers[0] != 0 else {
             return nil
         }
         
