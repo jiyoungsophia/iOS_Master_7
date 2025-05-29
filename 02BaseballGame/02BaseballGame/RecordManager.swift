@@ -7,7 +7,7 @@
 
 import Foundation
 
-class RecordManager {
+class RecordManager: RecordManagingInterface {
     private var records: [Int] = []
     
     func addRecord(attempts: Int) {
