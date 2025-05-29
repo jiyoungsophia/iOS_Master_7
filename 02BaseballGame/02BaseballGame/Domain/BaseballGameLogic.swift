@@ -7,7 +7,7 @@
 
 import Foundation
 
-class BaseballGameLogic: GameLogicInterface {    
+struct BaseballGameLogic: GameLogicInterface {    
   func makeAnswer() -> [Int] {
       var answer = Array(Constants.answerRange).shuffled()
     
