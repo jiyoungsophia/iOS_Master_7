@@ -8,8 +8,13 @@
 import Foundation
 
 struct BaseballGame {
-    private let gameLogic = BaseballGameLogic()
-    private let recordManager = RecordManager()
+    private let gameLogic: GameLogicInterface
+    private let recordManager: RecordManagingInterface
+    
+    init(gameLogic: GameLogicInterface, recordManager: RecordManagingInterface) {
+        self.gameLogic = gameLogic
+        self.recordManager = recordManager
+    }
     
     func run() {
         print(Constants.Messages.welcomeGreeting)

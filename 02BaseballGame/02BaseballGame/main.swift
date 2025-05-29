@@ -7,5 +7,5 @@
 
 import Foundation
 
-let game = BaseballGame()
+let game = BaseballGame(gameLogic: BaseballGameLogic(), recordManager: RecordManager())
 game.run()
