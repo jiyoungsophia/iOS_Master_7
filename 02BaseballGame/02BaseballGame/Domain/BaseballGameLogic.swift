@@ -20,7 +20,7 @@ struct BaseballGameLogic: GameLogicInterface {
     return result
   }
   
-  func validateInput(_ input: String) -> [Int]? {
+  func parseInput(_ input: String) -> [Int]? {
       guard input.count == Constants.digitCount else {
       return nil
     }
@@ -39,22 +39,15 @@ struct BaseballGameLogic: GameLogicInterface {
   }
   
   func getHint(comparing input: [Int], with answer: [Int]) -> String {
-    var strikesCount = 0
-    var ballCount = 0
+    let strikesCount = zip(input, answer)
+        .filter { $0 == $1 }
+        .count
+      
+    let ballsCount = zip(input, answer)
+        .filter { $0 != $1 && answer.contains($0) }
+        .count
     
-    for index in 0..<3 {
-      if input[index] == answer[index] {
-        strikesCount += 1
-      }
-    }
-    
-    for index in 0..<3 {
-      if input[index] != answer[index] && answer.contains(input[index]) {
-        ballCount += 1
-      }
-    }
-    
-    switch (strikesCount, ballCount) {
+    switch (strikesCount, ballsCount) {
     case (0, 0):
       return "Nothing!"
     case (let strikes, 0) where strikes > 0:
