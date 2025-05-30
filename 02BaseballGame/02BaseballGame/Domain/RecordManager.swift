@@ -20,8 +20,11 @@ final class RecordManager: RecordManagingInterface {
             return
         }
         
-        records.enumerated().forEach { index, attemptCount in
-            print("\(index + 1)\(Constants.Messages.gameRecordFormat)\(attemptCount)")
-        }
+        let formattedRecords = records
+            .enumerated()
+            .map { index, attempts in
+                "\(index + 1)\(Constants.Messages.gameRecordFormat)\(attempts)" }
+            .joined(separator: "\n")
+        print(formattedRecords)
     }
 }

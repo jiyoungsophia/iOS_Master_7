@@ -57,7 +57,7 @@ struct BaseballGame {
                 continue
             }
             
-            guard let numbers = gameLogic.validateInput(input) else {
+            guard let numbers = gameLogic.parseInput(input) else {
                 print(Constants.Messages.invalidInput)
                 continue
             }
