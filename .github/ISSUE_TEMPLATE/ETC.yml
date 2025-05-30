@@ -10,7 +10,7 @@ body:
     attributes:
         label: 🏷️ Description
         description: 이슈에 대한 설명을 적어주세요.
-        placeholder: ex. 지출 금액에 소수점이 세 자리가 아닌 네 자리 기준으로 작성돼요.
+        placeholder: 
     validations:
         required: false
     - type: textarea

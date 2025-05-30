@@ -11,7 +11,7 @@ body:
     attributes:
       label: 🏷️ Description
       description: 작업할 Feature에 대한 설명을 적어주세요.
-      placeholder: ex. 지출 통계 화면의 카테고리별 지출 그래프를 그려요.
+      placeholder: 
     validations:
       required: false
   - type: textarea
