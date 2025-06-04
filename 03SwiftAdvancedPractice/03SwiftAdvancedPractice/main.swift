@@ -23,7 +23,10 @@ calculate(sum)
 
 
 // MARK: - 필수 문제 2
+let numbers = Array(1...5)
+var result = [String]()
 
+result = numbers.map { String($0) }
 
 
 // MARK: - 필수 문제 3
