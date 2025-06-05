@@ -1,5 +1,5 @@
 //
-//  Generic.swift
+//  Generics.swift
 //  03SwiftAdvancedPractice
 //
 //  Created by 지영 on 6/5/25.
