@@ -7,11 +7,6 @@
 
 import Foundation
 
-/// 상속을 사용해 기능을 추가하는 것과 프로토콜 채택을 통해 기능을 추가하는 것
-/// 각각 장단점, 차이
-///
-///
-
 enum Engine {
     case electric
     case hydrogen
@@ -39,17 +34,17 @@ class Car {
     }
     
     public func stop()  {
-        print("차 멈춤")
+        print("차 멈춤 🛑✋")
     }
 }
 
-class ElectricCar: Car {
+final class ElectricCar: Car {
     override init(brand: String, model: String, year: String, engine: Engine) {
         super.init(brand: brand, model: model, year: year, engine: .electric)
     }
 }
 
-class hybridCar: Car {
+final class HybridCar: Car {
     override init(brand: String, model: String, year: String, engine: Engine) {
         super.init(brand: brand, model: model, year: year, engine: engine)
     }
