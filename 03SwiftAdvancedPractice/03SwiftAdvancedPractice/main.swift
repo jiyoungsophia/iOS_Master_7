@@ -55,3 +55,6 @@ testDeliverySystem(address: "서울시 마포구", status: .inTrasit(daysRemaini
  - 단점: 프로토콜의 요구사항 구현해야 하고, 저장 프로퍼티 공유 안됨
  */
 hybrid.switchEngine(to: .hydrogen)
+
+// MARK: - 도전 문제 2
+testSortableBox()
