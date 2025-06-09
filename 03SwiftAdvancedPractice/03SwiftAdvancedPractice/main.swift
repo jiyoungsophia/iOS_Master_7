@@ -62,3 +62,6 @@ testSortableBox()
 // MARK: - 도전 문제 3
 testIntroduceExtension()
 
+// MARK: - 도전 문제 4
+testCircularReference()
+testWeakReference()
