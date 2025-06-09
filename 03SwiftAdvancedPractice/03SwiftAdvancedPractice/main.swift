@@ -45,6 +45,7 @@ testDeliverySystem(address: "서울시 마포구", status: .error)
 testDeliverySystem(address: "서울시 마포구", status: .inTrasit(daysRemaining: 1))
 
 // MARK: - 도전 문제 1
+hybrid.switchEngine(to: .hydrogen)
 /*
  1. 상속
  - 장점: 부모 클래스에서 선언된 프로퍼티 공유, 메서드 자동으로 사용가능
@@ -54,7 +55,10 @@ testDeliverySystem(address: "서울시 마포구", status: .inTrasit(daysRemaini
  - 장점: 여러 프로토콜을 동시에 채택가능하고 class, struct, enum 모두 채택 가능, 구현체와 인터페이스 분리
  - 단점: 프로토콜의 요구사항 구현해야 하고, 저장 프로퍼티 공유 안됨
  */
-hybrid.switchEngine(to: .hydrogen)
 
 // MARK: - 도전 문제 2
 testSortableBox()
+
+// MARK: - 도전 문제 3
+testIntroduceExtension()
+
