@@ -18,7 +18,7 @@ class Car {
     private let year: String
     var engine: Engine {
         didSet {
-            print("\(engine)으로 엔진 변경")
+            print("\(oldValue)에서 \(engine)으로 엔진 변경")
         }
     }
     
@@ -49,7 +49,11 @@ final class HybridCar: Car {
         super.init(brand: brand, model: model, year: year, engine: engine)
     }
     
-    public func switchEngine(to newEngine: Engine) {
+    public func switchEngine(to newEngine: Engine)  {
+        guard engine != newEngine else {
+            print("같은 타입의 엔진입니다")
+            return
+        }
         self.engine = newEngine
     }
 }
