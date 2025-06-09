@@ -11,6 +11,10 @@ struct SortableBox<T: Comparable> {
     var items: [T] = []
     
     mutating func sortItems() {
+        guard !items.isEmpty else {
+            print("정렬할 데이터가 없습니다.")
+            return
+        }
         items.sort(by: <)
         print(items)
     }
