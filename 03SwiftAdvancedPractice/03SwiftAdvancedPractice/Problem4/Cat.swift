@@ -10,9 +10,9 @@ import Foundation
 struct Cat: Introducible {
     var name: String
     
-    func introduce() -> String {
-        return "야옹😺, 내 이름은 \(name)."
-    }
+//    func introduce() -> String {
+//        return "야옹😺, 내 이름은 \(name)."
+//    }
     
     func makeSound() -> String {
         return "🐈 Meow"
