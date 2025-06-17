@@ -10,20 +10,29 @@ import SnapKit
 import Then
 
 class BookViewController: UIViewController {
+    private let viewModel: BookViewModel
+    
     private let titleLabel = UILabel().then {
-        $0.text = "Harry Potter and the Philosopher's Stone"
         $0.textAlignment = .center
         $0.font = .systemFont(ofSize: 24, weight: .bold)
         $0.numberOfLines = 0
     }
     
     private let seriesButton = UIButton().then {
-        $0.setTitle("1", for: .normal)
         $0.titleLabel?.font = .systemFont(ofSize: 16)
         $0.setTitleColor(.white, for: .normal)
         $0.backgroundColor = .systemBlue
         $0.layer.cornerRadius = 20
         $0.clipsToBounds = true
+    }
+    
+    init(viewModel: BookViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     override func viewDidLoad() {
@@ -31,6 +40,9 @@ class BookViewController: UIViewController {
         
         setupViews()
         setupConstraints()
+        
+        viewModel.loadBooks()
+        updateUI()
     }
     
     private func setupViews() {
@@ -47,9 +59,16 @@ class BookViewController: UIViewController {
         }
         
         seriesButton.snp.makeConstraints {
+            $0.leading.greaterThanOrEqualToSuperview().inset(20)
+            $0.trailing.lessThanOrEqualToSuperview().inset(20)
             $0.centerX.equalToSuperview()
             $0.top.equalTo(titleLabel.snp.bottom).offset(16)
             $0.width.height.equalTo(40)
         }
+    }
+    
+    private func updateUI() {
+        titleLabel.text = viewModel.bookTitle
+        seriesButton.setTitle(viewModel.seriesNumber, for: .normal)
     }
 }
