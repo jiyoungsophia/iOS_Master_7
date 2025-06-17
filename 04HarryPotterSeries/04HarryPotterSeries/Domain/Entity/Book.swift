@@ -17,5 +17,3 @@ struct Book {
     let summary: String
     let chapters: [String]
 }
-
-
