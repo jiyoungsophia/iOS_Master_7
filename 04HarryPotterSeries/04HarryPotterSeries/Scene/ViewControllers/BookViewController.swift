@@ -42,9 +42,9 @@ class BookViewController: UIViewController {
         
         setupViews()
         setupConstraints()
+        setupBindings()
         
         viewModel.loadBooks()
-        updateUI()
     }
     
     private func setupViews() {
@@ -75,6 +75,16 @@ class BookViewController: UIViewController {
         }
     }
     
+    private func setupBindings() {
+        viewModel.onDataLoaded = { [weak self] in
+            self?.updateUI()
+        }
+        
+        viewModel.onError = { [weak self] error in
+            self?.showErrorAlert(error: error)
+        }
+    }
+    
     private func updateUI() {
         titleLabel.text = viewModel.bookTitle
         seriesButton.setTitle(viewModel.seriesNumber, for: .normal)
@@ -84,5 +94,16 @@ class BookViewController: UIViewController {
         bookDetailView.releasedRowView.content = viewModel.releaseDate
         bookDetailView.pagesRowView.content = viewModel.pages
         bookDetailView.bookImageView.image = UIImage(named: viewModel.bookImageName)
+    }
+    
+    private func showErrorAlert(error: DataServiceError) {
+        let alert = UIAlertController(
+            title: "error",
+            message: error.localizedDescription,
+            preferredStyle: .alert
+        )
+        
+        alert.addAction(UIAlertAction(title: "ok", style: .default))
+        present(alert, animated: true)
     }
 }
