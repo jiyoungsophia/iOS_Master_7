@@ -66,7 +66,7 @@ extension BookResponseDTO.BookDTO.BookAttributesDTO {
         return Book(
             title: title,
             author: author,
-            releaseDate: DateFormatter.enDateFormatter.date(from: releaseDate) ?? Date(),
+            releaseDate: DateFormatter.longDateFormatter.date(from: releaseDate) ?? Date(),
             pages: pages,
             wikiURL: URL(string: wikiURL) ?? URL(string: "https://harrypotter.fandom.com")!,
             dedication: dedication,

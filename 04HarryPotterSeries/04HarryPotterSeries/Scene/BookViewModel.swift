@@ -24,6 +24,31 @@ final class BookViewModel {
         return "\(selectedBookIndex + 1)"
     }
     
+    var author: String {
+        guard selectedBookIndex < books.count else {
+            return "저자 불러올 수 없음"
+        }
+        return books[selectedBookIndex].author
+    }
+    
+    var releaseDate: String {
+        guard selectedBookIndex < books.count else {
+            return "발매일 불러올 수 없음"
+        }
+        return DateFormatter.enDateFormatter.string(from: books[selectedBookIndex].releaseDate)
+    }
+    
+    var pages: String {
+        guard selectedBookIndex < books.count else {
+            return "페이지 수 불러올 수 없음"
+        }
+        return "\(books[selectedBookIndex].pages)"
+    }
+    
+    var bookImageName: String {
+        return "harrypotter\(selectedBookIndex + 1)"
+    }
+    
     func loadBooks() {
         let result = bookRepository.loadBooks()
         
