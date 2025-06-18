@@ -42,16 +42,9 @@ class BookViewController: UIViewController {
         
         setupViews()
         setupConstraints()
+        setupBindings()
         
-        viewModel.loadBooks { [weak self] result in
-            switch result {
-            case .success:
-                self?.updateUI()
-            case .failure(let error):
-                self?.showErrorAlert(error: error)
-            }
-            
-        }
+        viewModel.loadBooks()
     }
     
     private func setupViews() {
@@ -79,6 +72,16 @@ class BookViewController: UIViewController {
         bookDetailView.snp.makeConstraints {
             $0.top.equalTo(seriesButton.snp.bottom).offset(20)
             $0.leading.trailing.equalToSuperview().inset(20)
+        }
+    }
+    
+    private func setupBindings() {
+        viewModel.onDataLoaded = { [weak self] in
+            self?.updateUI()
+        }
+        
+        viewModel.onError = { [weak self] error in
+            self?.showErrorAlert(error: error)
         }
     }
     

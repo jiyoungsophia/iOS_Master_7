@@ -12,6 +12,10 @@ final class BookViewModel {
 
     private var books: [Book] = []
     private var selectedBookIndex: Int = 0
+    private(set) var error: DataServiceError?
+    
+    var onDataLoaded: (() -> Void)?
+    var onError: ((DataServiceError) -> Void)?
     
     var bookTitle: String {
         guard selectedBookIndex < books.count else {
@@ -49,18 +53,19 @@ final class BookViewModel {
         return "harrypotter\(selectedBookIndex + 1)"
     }
     
-    func loadBooks(completion: @escaping (Result<Void, DataServiceError>) -> Void) {
+    func loadBooks() {
         let result = bookRepository.loadBooks()
         
         switch result {
         case .success(let books):
             self.books = books
-            DispatchQueue.main.async {
-                completion(.success(()))
+            DispatchQueue.main.async { [weak self] in
+                self?.onDataLoaded?()
             }
         case .failure(let error):
-            DispatchQueue.main.async {
-                completion(.failure(error))
+            self.error = error
+            DispatchQueue.main.async { [weak self] in
+                self?.onError?(error)
             }
         }
     }
