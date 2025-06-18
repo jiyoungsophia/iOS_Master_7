@@ -43,8 +43,15 @@ class BookViewController: UIViewController {
         setupViews()
         setupConstraints()
         
-        viewModel.loadBooks()
-        updateUI()
+        viewModel.loadBooks { [weak self] result in
+            switch result {
+            case .success:
+                self?.updateUI()
+            case .failure(let error):
+                self?.showErrorAlert(error: error)
+            }
+            
+        }
     }
     
     private func setupViews() {
@@ -84,5 +91,16 @@ class BookViewController: UIViewController {
         bookDetailView.releasedRowView.content = viewModel.releaseDate
         bookDetailView.pagesRowView.content = viewModel.pages
         bookDetailView.bookImageView.image = UIImage(named: viewModel.bookImageName)
+    }
+    
+    private func showErrorAlert(error: DataServiceError) {
+        let alert = UIAlertController(
+            title: "error",
+            message: error.localizedDescription,
+            preferredStyle: .alert
+        )
+        
+        alert.addAction(UIAlertAction(title: "ok", style: .default))
+        present(alert, animated: true)
     }
 }

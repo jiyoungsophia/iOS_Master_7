@@ -49,14 +49,19 @@ final class BookViewModel {
         return "harrypotter\(selectedBookIndex + 1)"
     }
     
-    func loadBooks() {
+    func loadBooks(completion: @escaping (Result<Void, DataServiceError>) -> Void) {
         let result = bookRepository.loadBooks()
         
         switch result {
         case .success(let books):
             self.books = books
+            DispatchQueue.main.async {
+                completion(.success(()))
+            }
         case .failure(let error):
-            print("Error: \(error)") 
+            DispatchQueue.main.async {
+                completion(.failure(error))
+            }
         }
     }
     
