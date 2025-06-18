@@ -26,6 +26,8 @@ class BookViewController: UIViewController {
         $0.clipsToBounds = true
     }
     
+    private let bookDetailView = BookDetailView()
+    
     init(viewModel: BookViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -50,6 +52,7 @@ class BookViewController: UIViewController {
         
         view.addSubview(titleLabel)
         view.addSubview(seriesButton)
+        view.addSubview(bookDetailView)
     }
     
     private func setupConstraints() {
@@ -65,10 +68,21 @@ class BookViewController: UIViewController {
             $0.top.equalTo(titleLabel.snp.bottom).offset(16)
             $0.width.height.equalTo(40)
         }
+        
+        bookDetailView.snp.makeConstraints {
+            $0.top.equalTo(seriesButton.snp.bottom).offset(20)
+            $0.leading.trailing.equalToSuperview().inset(20)
+        }
     }
     
     private func updateUI() {
         titleLabel.text = viewModel.bookTitle
         seriesButton.setTitle(viewModel.seriesNumber, for: .normal)
+        
+        bookDetailView.bookTitleLabel.text = viewModel.bookTitle
+        bookDetailView.authorRowView.content = viewModel.author
+        bookDetailView.releasedRowView.content = viewModel.releaseDate
+        bookDetailView.pagesRowView.content = viewModel.pages
+        bookDetailView.bookImageView.image = UIImage(named: viewModel.bookImageName)
     }
 }
