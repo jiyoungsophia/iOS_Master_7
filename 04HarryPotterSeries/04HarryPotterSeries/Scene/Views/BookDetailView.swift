@@ -10,6 +10,12 @@ import SnapKit
 import Then
 
 class BookDetailView: UIView {
+    private let scrollView = UIScrollView().then {
+        $0.showsVerticalScrollIndicator = false
+    }
+    
+    private let contentView = UIView()
+    
     // MARK: - 책 정보 영역
     let bookImageView = UIImageView().then {
         $0.contentMode = .scaleAspectFit
@@ -40,18 +46,18 @@ class BookDetailView: UIView {
         title: "Pages",
     )
     
-    let labelVStackView = UIStackView().then {
+    private let labelVStackView = UIStackView().then {
         $0.axis = .vertical
         $0.spacing = 8
     }
     
-    let infoHStackView = UIStackView().then {
+    private let infoHStackView = UIStackView().then {
         $0.axis = .horizontal
         $0.spacing = 16
         $0.alignment = .top
     }
     
-    // MARK: -
+    // MARK: - dedication, summary, chapters
     let dedicationView = InfoStackView(
         axis: .vertical,
         title: "Dedication",
@@ -64,7 +70,9 @@ class BookDetailView: UIView {
         titleFont: .boldSystemFont(ofSize: 18),
     )
     
-    let contentHStackView = UIStackView().then {
+    let chaptersView = ChaptersView()
+    
+    private let contentHStackView = UIStackView().then {
         $0.axis = .vertical
         $0.spacing = 24
     }
@@ -84,6 +92,9 @@ class BookDetailView: UIView {
     func setupView() {
         backgroundColor = .white
         
+        addSubview(scrollView)
+        scrollView.addSubview(contentView)
+        
         bookImageView.setContentHuggingPriority(.required, for: .horizontal)
         labelVStackView.setContentHuggingPriority(.defaultLow, for: .horizontal)
         
@@ -91,27 +102,37 @@ class BookDetailView: UIView {
             .forEach { labelVStackView.addArrangedSubview($0) }
         [bookImageView, labelVStackView]
             .forEach { infoHStackView.addArrangedSubview($0) }
-        [dedicationView, summaryView]
+        [dedicationView, summaryView, chaptersView]
             .forEach { contentHStackView.addArrangedSubview($0)}
         
-        self.addSubview(infoHStackView)
-        self.addSubview(contentHStackView)
+        contentView.addSubview(infoHStackView)
+        contentView.addSubview(contentHStackView)
         
     }
     
     func setupConstraints() {
+        scrollView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+        
+        contentView.snp.makeConstraints {
+            $0.edges.equalTo(scrollView.contentLayoutGuide)
+            $0.width.equalTo(scrollView.frameLayoutGuide)
+        }
+        
         bookImageView.snp.makeConstraints {
             $0.width.equalTo(100)
             $0.height.equalTo(bookImageView.snp.width).multipliedBy(1.5)
         }
         
         infoHStackView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview()
+            $0.top.leading.trailing.equalToSuperview()
         }
         
         contentHStackView.snp.makeConstraints {
             $0.top.equalTo(infoHStackView.snp.bottom).offset(24)
             $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalToSuperview()
         }
     }
 }

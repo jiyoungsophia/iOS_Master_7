@@ -56,6 +56,10 @@ final class BookViewModel {
         return currentBook?.summary ?? "summary not available"
     }
     
+    var chapters: [String] {
+        return currentBook?.chapters ?? []
+    }
+    
     func loadBooks() {
         let result = bookRepository.loadBooks()
         
