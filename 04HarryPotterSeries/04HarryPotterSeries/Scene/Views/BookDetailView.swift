@@ -10,6 +10,13 @@ import SnapKit
 import Then
 
 class BookDetailView: UIView {
+    private let scrollView = UIScrollView().then {
+        $0.showsVerticalScrollIndicator = false
+    }
+    
+    private let contentView = UIView()
+    
+    // MARK: - 책 정보 영역
     let bookImageView = UIImageView().then {
         $0.contentMode = .scaleAspectFit
         $0.clipsToBounds = true
@@ -39,6 +46,18 @@ class BookDetailView: UIView {
         title: "Pages",
     )
     
+    private let labelVStackView = UIStackView().then {
+        $0.axis = .vertical
+        $0.spacing = 8
+    }
+    
+    private let infoHStackView = UIStackView().then {
+        $0.axis = .horizontal
+        $0.spacing = 16
+        $0.alignment = .top
+    }
+    
+    // MARK: - dedication, summary, chapters
     let dedicationView = InfoStackView(
         axis: .vertical,
         title: "Dedication",
@@ -51,20 +70,7 @@ class BookDetailView: UIView {
         titleFont: .boldSystemFont(ofSize: 18),
     )
     
-    private let scrollView = UIScrollView()
-    private let contentView = UIView()
-    
-    private let labelVStackView = UIStackView().then {
-        $0.axis = .vertical
-        $0.spacing = 8
-    }
-    
-    private let infoHStackView = UIStackView().then {
-        $0.axis = .horizontal
-        $0.spacing = 16
-        $0.alignment = .top
-    }
-    
+    let chaptersView = ChaptersView()
     
     private let contentHStackView = UIStackView().then {
         $0.axis = .vertical
@@ -85,8 +91,6 @@ class BookDetailView: UIView {
     
     func setupView() {
         backgroundColor = .white
-        scrollView.backgroundColor = .systemYellow
-        contentView.backgroundColor = .systemBlue
         
         addSubview(scrollView)
         scrollView.addSubview(contentView)
@@ -98,7 +102,7 @@ class BookDetailView: UIView {
             .forEach { labelVStackView.addArrangedSubview($0) }
         [bookImageView, labelVStackView]
             .forEach { infoHStackView.addArrangedSubview($0) }
-        [dedicationView, summaryView]
+        [dedicationView, summaryView, chaptersView]
             .forEach { contentHStackView.addArrangedSubview($0)}
         
         contentView.addSubview(infoHStackView)
