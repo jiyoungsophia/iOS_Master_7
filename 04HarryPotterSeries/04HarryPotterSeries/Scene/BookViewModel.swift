@@ -12,16 +12,20 @@ final class BookViewModel {
 
     private var books: [Book] = []
     private var selectedBookIndex: Int = 0
+    private var currentBook: Book? {
+        guard selectedBookIndex < books.count else {
+            return nil
+        }
+        return books[selectedBookIndex]
+    }
+    
     private(set) var error: DataServiceError?
     
     var onDataLoaded: (() -> Void)?
     var onError: ((DataServiceError) -> Void)?
     
     var bookTitle: String {
-        guard selectedBookIndex < books.count else {
-            return "제목 불러올 수 없음"
-        }
-        return books[selectedBookIndex].title
+        return currentBook?.title ?? "title not available"
     }
     
     var seriesNumber: String {
@@ -29,24 +33,15 @@ final class BookViewModel {
     }
     
     var author: String {
-        guard selectedBookIndex < books.count else {
-            return "저자 불러올 수 없음"
-        }
-        return books[selectedBookIndex].author
+        return currentBook?.author ?? "author not available"
     }
     
     var releaseDate: String {
-        guard selectedBookIndex < books.count else {
-            return "발매일 불러올 수 없음"
-        }
-        return DateFormatter.enDateFormatter.string(from: books[selectedBookIndex].releaseDate)
+        return DateFormatter.enDateFormatter.string(from: currentBook?.releaseDate ?? Date())
     }
     
     var pages: String {
-        guard selectedBookIndex < books.count else {
-            return "페이지 수 불러올 수 없음"
-        }
-        return "\(books[selectedBookIndex].pages)"
+        return "\(currentBook?.pages ?? 0)"
     }
     
     var bookImageName: String {
@@ -54,17 +49,11 @@ final class BookViewModel {
     }
     
     var dedication: String {
-        guard selectedBookIndex < books.count else {
-            return "헌정사 불러올 수 없음"
-        }
-        return books[selectedBookIndex].dedication
+        return currentBook?.dedication ?? "dedication not available"
     }
     
     var summary: String {
-        guard selectedBookIndex < books.count else {
-            return "요약 불러올 수 없음"
-        }
-        return books[selectedBookIndex].summary
+        return currentBook?.summary ?? "summary not available"
     }
     
     func loadBooks() {
