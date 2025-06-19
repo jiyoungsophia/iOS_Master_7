@@ -94,6 +94,8 @@ class BookViewController: UIViewController {
         bookDetailView.releasedRowView.content = viewModel.releaseDate
         bookDetailView.pagesRowView.content = viewModel.pages
         bookDetailView.bookImageView.image = UIImage(named: viewModel.bookImageName)
+        bookDetailView.dedicationView.content  = viewModel.dedication
+        bookDetailView.summaryView.content  = viewModel.summary
     }
     
     private func showErrorAlert(error: DataServiceError) {

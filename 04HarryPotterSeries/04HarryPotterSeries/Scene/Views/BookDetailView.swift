@@ -10,6 +10,7 @@ import SnapKit
 import Then
 
 class BookDetailView: UIView {
+    // MARK: - 책 정보 영역
     let bookImageView = UIImageView().then {
         $0.contentMode = .scaleAspectFit
         $0.clipsToBounds = true
@@ -21,28 +22,24 @@ class BookDetailView: UIView {
         $0.numberOfLines = 0
     }
     
-    let authorRowView = InfoRowView(
+    let authorRowView = InfoStackView(
+        axis: .horizontal,
         title: "Author",
         titleFont: .boldSystemFont(ofSize: 16),
         contentFont: .systemFont(ofSize: 18),
         contentColor: .darkGray
     )
     
-    let releasedRowView = InfoRowView(
+    let releasedRowView = InfoStackView(
+        axis: .horizontal,
         title: "Released",
-        titleFont: .boldSystemFont(ofSize: 14),
-        contentFont: .systemFont(ofSize: 14),
-        contentColor: .gray
     )
     
-    let pagesRowView = InfoRowView(
+    let pagesRowView = InfoStackView(
+        axis: .horizontal,
         title: "Pages",
-        titleFont: .boldSystemFont(ofSize: 14),
-        contentFont: .systemFont(ofSize: 14),
-        contentColor: .gray
     )
     
-    // MARK: -
     let labelVStackView = UIStackView().then {
         $0.axis = .vertical
         $0.spacing = 8
@@ -53,6 +50,25 @@ class BookDetailView: UIView {
         $0.spacing = 16
         $0.alignment = .top
     }
+    
+    // MARK: -
+    let dedicationView = InfoStackView(
+        axis: .vertical,
+        title: "Dedication",
+        titleFont: .boldSystemFont(ofSize: 18),
+    )
+    
+    let summaryView = InfoStackView(
+        axis: .vertical,
+        title: "Summary",
+        titleFont: .boldSystemFont(ofSize: 18),
+    )
+    
+    let contentHStackView = UIStackView().then {
+        $0.axis = .vertical
+        $0.spacing = 24
+    }
+    
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -75,8 +91,11 @@ class BookDetailView: UIView {
             .forEach { labelVStackView.addArrangedSubview($0) }
         [bookImageView, labelVStackView]
             .forEach { infoHStackView.addArrangedSubview($0) }
+        [dedicationView, summaryView]
+            .forEach { contentHStackView.addArrangedSubview($0)}
         
         self.addSubview(infoHStackView)
+        self.addSubview(contentHStackView)
         
     }
     
@@ -87,7 +106,11 @@ class BookDetailView: UIView {
         }
         
         infoHStackView.snp.makeConstraints {
-            $0.top.equalTo(bookImageView.snp.top)
+            $0.leading.trailing.equalToSuperview()
+        }
+        
+        contentHStackView.snp.makeConstraints {
+            $0.top.equalTo(infoHStackView.snp.bottom).offset(24)
             $0.leading.trailing.equalToSuperview()
         }
     }
