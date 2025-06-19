@@ -9,11 +9,12 @@ import UIKit
 import SnapKit
 import Then
 
-final class InfoRowView: UIView {
+final class InfoStackView: UIView {
     private let titleLabel = UILabel()
-    private let contentLabel = UILabel()
+    private let contentLabel = UILabel().then {
+        $0.numberOfLines = 0
+    }
     private let stackView = UIStackView().then {
-        $0.axis = .horizontal
         $0.spacing = 8
     }
     
@@ -23,6 +24,7 @@ final class InfoRowView: UIView {
     }
     
     init(
+        axis: NSLayoutConstraint.Axis = .horizontal,
         title: String,
         titleFont: UIFont = .boldSystemFont(ofSize: 14),
         titleColor: UIColor = .black,
@@ -31,6 +33,7 @@ final class InfoRowView: UIView {
     ) {
         super.init(frame: .zero)
         setupView(
+            axis: axis,
             title: title,
             titleFont: titleFont,
             contentFont: contentFont,
@@ -43,14 +46,17 @@ final class InfoRowView: UIView {
     }
     
     private func setupView(
+        axis: NSLayoutConstraint.Axis,
         title: String,
         titleFont: UIFont,
         contentFont: UIFont,
         contentColor: UIColor
     ) {
+        stackView.axis = axis
+        
         titleLabel.text = title
         titleLabel.font = titleFont
-        titleLabel.setContentHuggingPriority(.required, for: .horizontal)
+        titleLabel.setContentHuggingPriority(.required, for: axis == .horizontal ? .horizontal : .vertical)
         
         contentLabel.font = contentFont
         contentLabel.textColor = contentColor

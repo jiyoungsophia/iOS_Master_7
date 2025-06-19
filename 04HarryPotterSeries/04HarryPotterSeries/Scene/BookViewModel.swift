@@ -53,6 +53,20 @@ final class BookViewModel {
         return "harrypotter\(selectedBookIndex + 1)"
     }
     
+    var dedication: String {
+        guard selectedBookIndex < books.count else {
+            return "헌정사 불러올 수 없음"
+        }
+        return books[selectedBookIndex].dedication
+    }
+    
+    var summary: String {
+        guard selectedBookIndex < books.count else {
+            return "요약 불러올 수 없음"
+        }
+        return books[selectedBookIndex].summary
+    }
+    
     func loadBooks() {
         let result = bookRepository.loadBooks()
         
