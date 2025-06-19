@@ -10,6 +10,28 @@ import SnapKit
 import Then
 
 final class SummaryView: UIView {
+    private let charaterLimit: Int = 450
+    
+    private var fullText = "" {
+        didSet {
+            updateUI()
+        }
+    }
+    
+    private var isExpanded: Bool = false {
+        didSet {
+            updateContent()
+        }
+    }
+    private var isButtonNeeded: Bool {
+        fullText.count >= charaterLimit
+    }
+    
+    var content: String? {
+        get { fullText }
+        set { fullText = newValue ?? "" }
+    }
+    
     private let titleLabel = UILabel().then {
         $0.text = "Summary"
         $0.font = .boldSystemFont(ofSize: 18)
@@ -34,11 +56,6 @@ final class SummaryView: UIView {
         $0.spacing = 8
     }
     
-    var content: String? {
-        get { contentLabel.text }
-        set { contentLabel.text = newValue }
-    }
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -53,11 +70,38 @@ final class SummaryView: UIView {
         
         [titleLabel, contentLabel, toggleButton]
             .forEach { summaryVStackView.addArrangedSubview($0) }
-        
         addSubview(summaryVStackView)
         
         summaryVStackView.snp.makeConstraints {
             $0.edges.equalToSuperview()
+        }
+        
+        toggleButton.addTarget(self, action: #selector(toggleButtonTapped), for: .touchUpInside)
+    }
+    
+    @objc
+    private func toggleButtonTapped() {
+        isExpanded.toggle()
+    }
+    
+    private func updateUI() {
+        toggleButton.isHidden = !isButtonNeeded
+        updateContent()
+    }
+    
+    private func updateContent() {
+        guard isButtonNeeded else {
+            contentLabel.text = fullText
+            return
+        }
+        
+        if isExpanded {
+            contentLabel.text = fullText
+            toggleButton.setTitle("접기", for: .normal)
+        } else {
+            let truncatedText = fullText.prefix(charaterLimit) + "..."
+            contentLabel.text = String(truncatedText)
+            toggleButton.setTitle("더보기", for: .normal)
         }
     }
 }
