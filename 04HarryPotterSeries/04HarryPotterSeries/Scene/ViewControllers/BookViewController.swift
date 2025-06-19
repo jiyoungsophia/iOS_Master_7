@@ -72,6 +72,7 @@ class BookViewController: UIViewController {
         bookDetailView.snp.makeConstraints {
             $0.top.equalTo(seriesButton.snp.bottom).offset(20)
             $0.leading.trailing.equalToSuperview().inset(20)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
         }
     }
     
