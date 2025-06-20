@@ -11,7 +11,7 @@ final class BookViewModel {
     private let bookRepository: BookRepository
 
     private var books: [Book] = []
-    private var selectedBookIndex: Int = 0
+    private(set) var selectedBookIndex: Int = 0
     private var currentBook: Book? {
         guard selectedBookIndex < books.count else {
             return nil
@@ -60,6 +60,10 @@ final class BookViewModel {
         return currentBook?.chapters ?? []
     }
     
+    var totalBooksCount: Int {
+        return books.count
+    }
+    
     func loadBooks() {
         let result = bookRepository.loadBooks()
         
@@ -77,6 +81,14 @@ final class BookViewModel {
         }
     }
     
+    func selectBook(at index: Int) {
+        selectedBookIndex = index
+        
+        DispatchQueue.main.async { [weak self] in
+            self?.onDataLoaded?()
+        }
+    }
+    
     func loadSummaryExpandedState() -> Bool {
         return UserDefaultsManager.shared.loadSummaryState(of: bookTitle)
     }
@@ -88,5 +100,4 @@ final class BookViewModel {
     init(bookRepository: BookRepository) {
         self.bookRepository = bookRepository
     }
-    
 }

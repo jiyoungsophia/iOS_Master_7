@@ -18,12 +18,13 @@ class BookViewController: UIViewController {
         $0.numberOfLines = 0
     }
     
-    private let seriesButton = UIButton().then {
-        $0.titleLabel?.font = .systemFont(ofSize: 16)
-        $0.setTitleColor(.white, for: .normal)
-        $0.backgroundColor = .systemBlue
-        $0.layer.cornerRadius = 20
-        $0.clipsToBounds = true
+    private var seriesButtons: [UIButton] = []
+
+    private let seriesStackView = UIStackView().then {
+        $0.axis = .horizontal
+        $0.spacing = 8
+        $0.distribution = .fillEqually
+        $0.alignment = .center
     }
     
     private let bookDetailView = BookDetailView()
@@ -51,7 +52,7 @@ class BookViewController: UIViewController {
         view.backgroundColor = .white
         
         view.addSubview(titleLabel)
-        view.addSubview(seriesButton)
+        view.addSubview(seriesStackView)
         view.addSubview(bookDetailView)
     }
     
@@ -61,17 +62,18 @@ class BookViewController: UIViewController {
             $0.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
         }
         
-        seriesButton.snp.makeConstraints {
+        seriesStackView.snp.makeConstraints {
             $0.leading.greaterThanOrEqualToSuperview().inset(20)
             $0.trailing.lessThanOrEqualToSuperview().inset(20)
             $0.centerX.equalToSuperview()
             $0.top.equalTo(titleLabel.snp.bottom).offset(16)
-            $0.width.height.equalTo(40)
+            $0.height.equalTo(40)
         }
         
         bookDetailView.snp.makeConstraints {
-            $0.top.equalTo(seriesButton.snp.bottom).offset(20)
-            $0.leading.trailing.equalToSuperview().inset(20)
+            $0.top.equalTo(seriesStackView.snp.bottom).offset(20)
+            $0.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).inset(20)
+            $0.trailing.equalTo(view.safeAreaLayoutGuide.snp.trailing).inset(20)
             $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
         }
     }
@@ -92,7 +94,12 @@ class BookViewController: UIViewController {
     
     private func updateUI() {
         titleLabel.text = viewModel.bookTitle
-        seriesButton.setTitle(viewModel.seriesNumber, for: .normal)
+        
+        if seriesButtons.isEmpty {
+            createSeriesButtons(count: viewModel.totalBooksCount)
+        } else {
+            updateButtonSelection(selectedIndex: viewModel.selectedBookIndex)
+        }
         
         bookDetailView.bookTitleLabel.text = viewModel.bookTitle
         bookDetailView.authorRowView.content = viewModel.author
@@ -105,6 +112,40 @@ class BookViewController: UIViewController {
         bookDetailView.chaptersView.chapters = viewModel.chapters
     }
     
+    private func createSeriesButtons(count: Int) {
+        seriesStackView.clearArrangedSubviews()
+        
+        seriesStackView.addArrangedSubviews(from: Array(0..<count)) { _, index in
+            let button = UIButton().then {
+                $0.setTitle("\(index + 1)", for: .normal)
+                $0.titleLabel?.font = .systemFont(ofSize: 16)
+                $0.layer.cornerRadius = 20
+                $0.clipsToBounds = true
+                $0.tag = index
+                $0.addTarget(self, action: #selector(seriesButtonTapped(_:)), for: .touchUpInside)
+                
+                $0.snp.makeConstraints {
+                    $0.width.height.equalTo(40)
+                }
+            }
+            seriesButtons.append(button)
+            return button
+        }
+        updateButtonSelection(selectedIndex: viewModel.selectedBookIndex)
+    }
+    
+    private func updateButtonSelection(selectedIndex: Int) {
+        seriesButtons.enumerated().forEach { index, button in
+            if index == selectedIndex {
+                button.backgroundColor = .systemBlue
+                button.setTitleColor(.white, for: .normal)
+            } else {
+                button.backgroundColor = .systemGray5
+                button.setTitleColor(.systemBlue, for: .normal)
+            }
+        }
+    }
+    
     private func showErrorAlert(error: DataServiceError) {
         let alert = UIAlertController(
             title: "error",
@@ -112,7 +153,13 @@ class BookViewController: UIViewController {
             preferredStyle: .alert
         )
         
-        alert.addAction(UIAlertAction(title: "ok", style: .default))
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
+    }
+    
+    @objc
+    private func seriesButtonTapped(_ sender: UIButton) {
+        let selectedIndex = sender.tag
+        viewModel.selectBook(at: selectedIndex)
     }
 }

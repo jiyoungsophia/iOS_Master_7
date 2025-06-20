@@ -38,26 +38,30 @@ final class ChaptersView: UIView {
     
     private func setupView() {
         backgroundColor = .clear
+        addSubview(titleLabel)
         addSubview(chapterVStackView)
-    
-        chapterVStackView.addArrangedSubview(titleLabel)
     }
     
     private func setupConstraints() {
+        titleLabel.snp.makeConstraints {
+            $0.top.leading.trailing.equalToSuperview()
+        }
+        
         chapterVStackView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.top.equalTo(titleLabel.snp.bottom).offset(8)
+            $0.leading.trailing.bottom.equalToSuperview()
         }
     }
     
     private func updateChapters() {
-        chapters.forEach { text in
-            let chapterLabel = UILabel().then {
+        chapterVStackView.clearArrangedSubviews()
+        chapterVStackView.addArrangedSubviews(from: chapters) { text, _ in
+            return UILabel().then {
                 $0.text = text
                 $0.font = .systemFont(ofSize: 14)
                 $0.textColor = .darkGray
                 $0.numberOfLines = 0
             }
-            chapterVStackView.addArrangedSubview(chapterLabel)
         }
     }
 }
