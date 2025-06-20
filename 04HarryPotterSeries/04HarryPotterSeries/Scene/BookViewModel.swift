@@ -13,7 +13,6 @@ final class BookViewModel {
     private let bookRepository: BookRepository
     private var books: [Book] = []
     private(set) var selectedBookIndex: Int = 0
-    private(set) var error: DataServiceError?
     
     // MARK: - Computed Properties
     private var currentBook: Book? {
@@ -79,14 +78,10 @@ final class BookViewModel {
         switch result {
         case .success(let books):
             self.books = books
-            DispatchQueue.main.async { [weak self] in
-                self?.onDataLoaded?()
-            }
+            self.onDataLoaded?()
+            
         case .failure(let error):
-            self.error = error
-            DispatchQueue.main.async { [weak self] in
-                self?.onError?(error)
-            }
+            self.onError?(error)
         }
     }
     
