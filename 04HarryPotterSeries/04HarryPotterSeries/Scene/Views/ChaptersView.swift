@@ -50,14 +50,13 @@ final class ChaptersView: UIView {
     }
     
     private func updateChapters() {
-        chapters.forEach { text in
-            let chapterLabel = UILabel().then {
+        chapterVStackView.addArrangedSubviews(from: chapters) { text, _ in
+            return UILabel().then {
                 $0.text = text
                 $0.font = .systemFont(ofSize: 14)
                 $0.textColor = .darkGray
                 $0.numberOfLines = 0
             }
-            chapterVStackView.addArrangedSubview(chapterLabel)
         }
     }
 }
