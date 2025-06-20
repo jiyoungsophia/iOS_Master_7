@@ -12,24 +12,20 @@ import Then
 final class SummaryView: UIView {
     private let charaterLimit: Int = 450
     
-    private var fullText = "" {
+    var content = "" {
         didSet {
-            updateUI()
+            updateUI() // 글자 수에 따라 UI 변경
         }
     }
     
     private var isExpanded: Bool = false {
         didSet {
-            updateContent()
+            updateTextState()
         }
     }
-    private var isButtonNeeded: Bool {
-        fullText.count >= charaterLimit
-    }
     
-    var content: String? {
-        get { fullText }
-        set { fullText = newValue ?? "" }
+    private var isButtonNeeded: Bool {
+        content.count >= charaterLimit
     }
     
     private let titleLabel = UILabel().then {
@@ -86,20 +82,20 @@ final class SummaryView: UIView {
     
     private func updateUI() {
         toggleButton.isHidden = !isButtonNeeded
-        updateContent()
+        updateTextState()
     }
     
-    private func updateContent() {
+    private func updateTextState() {
         guard isButtonNeeded else {
-            contentLabel.text = fullText
+            contentLabel.text = content // 450자 미만일땐 풀텍스트
             return
         }
         
         if isExpanded {
-            contentLabel.text = fullText
+            contentLabel.text = content
             toggleButton.setTitle("접기", for: .normal)
         } else {
-            let truncatedText = fullText.prefix(charaterLimit) + "..."
+            let truncatedText = content.prefix(charaterLimit) + "..."
             contentLabel.text = String(truncatedText)
             toggleButton.setTitle("더보기", for: .normal)
         }
