@@ -77,7 +77,16 @@ final class BookViewModel {
         }
     }
     
+    func loadSummaryExpandedState() -> Bool {
+        return UserDefaultsManager.shared.loadSummaryState(of: bookTitle)
+    }
+    
+    func saveSummaryExpandedState(_ isExpanded: Bool) {
+        UserDefaultsManager.shared.saveSummaryState(isExpanded, of: bookTitle)
+    }
+    
     init(bookRepository: BookRepository) {
         self.bookRepository = bookRepository
     }
+    
 }

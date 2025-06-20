@@ -18,6 +18,16 @@ final class SummaryView: UIView {
         }
     }
     
+    var initialExpandedState: Bool = false {
+        didSet {
+            if isButtonNeeded {
+                isExpanded = initialExpandedState
+            }
+        }
+    }
+    
+    var onExpandedStateChanged: ((Bool) -> Void)?
+    
     private var isExpanded: Bool = false {
         didSet {
             updateTextState()
@@ -74,12 +84,7 @@ final class SummaryView: UIView {
         
         toggleButton.addTarget(self, action: #selector(toggleButtonTapped), for: .touchUpInside)
     }
-    
-    @objc
-    private func toggleButtonTapped() {
-        isExpanded.toggle()
-    }
-    
+
     private func updateUI() {
         toggleButton.isHidden = !isButtonNeeded
         updateTextState()
@@ -99,5 +104,11 @@ final class SummaryView: UIView {
             contentLabel.text = String(truncatedText)
             toggleButton.setTitle("더보기", for: .normal)
         }
+    }
+    
+    @objc
+    private func toggleButtonTapped() {
+        isExpanded.toggle()
+        onExpandedStateChanged?(isExpanded)
     }
 }
