@@ -10,8 +10,10 @@ import SnapKit
 import Then
 
 class BookViewController: UIViewController {
+    // MARK: - Properties
     private let viewModel: BookViewModel
     
+    // MARK: - UI Components
     private let titleLabel = UILabel().then {
         $0.textAlignment = .center
         $0.font = .systemFont(ofSize: 24, weight: .bold)
@@ -29,6 +31,7 @@ class BookViewController: UIViewController {
     
     private let bookDetailView = BookDetailView()
     
+    // MARK: - Initializers
     init(viewModel: BookViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -38,6 +41,7 @@ class BookViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -48,6 +52,7 @@ class BookViewController: UIViewController {
         viewModel.loadBooks()
     }
     
+    // MARK: - Setup Methods
     private func setupViews() {
         view.backgroundColor = .white
         
@@ -97,10 +102,9 @@ class BookViewController: UIViewController {
         
         if seriesButtons.isEmpty {
             createSeriesButtons(count: viewModel.totalBooksCount)
-        } else {
-            updateButtonSelection(selectedIndex: viewModel.selectedBookIndex)
-        }
-        
+        } 
+        updateButtonSelection(selectedIndex: viewModel.selectedBookIndex)
+
         bookDetailView.bookTitleLabel.text = viewModel.bookTitle
         bookDetailView.authorRowView.content = viewModel.author
         bookDetailView.releasedRowView.content = viewModel.releaseDate
@@ -146,6 +150,7 @@ class BookViewController: UIViewController {
         }
     }
     
+    // MARK: - Private Methods
     private func showErrorAlert(error: DataServiceError) {
         let alert = UIAlertController(
             title: "error",
@@ -157,6 +162,7 @@ class BookViewController: UIViewController {
         present(alert, animated: true)
     }
     
+    // MARK: - Actions
     @objc
     private func seriesButtonTapped(_ sender: UIButton) {
         let selectedIndex = sender.tag

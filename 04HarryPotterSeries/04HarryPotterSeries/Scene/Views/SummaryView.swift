@@ -10,7 +10,19 @@ import SnapKit
 import Then
 
 final class SummaryView: UIView {
-    private let charaterLimit: Int = 450
+    // MARK: - Constants
+    private let characterLimit: Int = 450
+    
+    // MARK: - Properties
+    private var isExpanded: Bool = false {
+        didSet {
+            updateTextState()
+        }
+    }
+    
+    private var isButtonNeeded: Bool {
+        content.count >= characterLimit
+    }
     
     var content = "" {
         didSet {
@@ -26,18 +38,10 @@ final class SummaryView: UIView {
         }
     }
     
+    // MARK: - Closures
     var onExpandedStateChanged: ((Bool) -> Void)?
     
-    private var isExpanded: Bool = false {
-        didSet {
-            updateTextState()
-        }
-    }
-    
-    private var isButtonNeeded: Bool {
-        content.count >= charaterLimit
-    }
-    
+    // MARK: - UI Components
     private let titleLabel = UILabel().then {
         $0.text = "Summary"
         $0.font = .boldSystemFont(ofSize: 18)
@@ -62,6 +66,7 @@ final class SummaryView: UIView {
         $0.spacing = 8
     }
     
+    // MARK: - Initializers
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -71,6 +76,7 @@ final class SummaryView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - Setup Methods
     private func setupView() {
         backgroundColor = .clear
         
@@ -100,12 +106,13 @@ final class SummaryView: UIView {
             contentLabel.text = content
             toggleButton.setTitle("접기", for: .normal)
         } else {
-            let truncatedText = content.prefix(charaterLimit) + "..."
+            let truncatedText = content.prefix(characterLimit) + "..."
             contentLabel.text = String(truncatedText)
             toggleButton.setTitle("더보기", for: .normal)
         }
     }
     
+    // MARK: - Actions
     @objc
     private func toggleButtonTapped() {
         isExpanded.toggle()

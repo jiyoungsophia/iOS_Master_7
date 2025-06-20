@@ -8,21 +8,20 @@
 import Foundation
 
 final class BookViewModel {
+    
+    // MARK: - Properties
     private let bookRepository: BookRepository
-
     private var books: [Book] = []
     private(set) var selectedBookIndex: Int = 0
+    private(set) var error: DataServiceError?
+    
+    // MARK: - Computed Properties
     private var currentBook: Book? {
         guard selectedBookIndex < books.count else {
             return nil
         }
         return books[selectedBookIndex]
     }
-    
-    private(set) var error: DataServiceError?
-    
-    var onDataLoaded: (() -> Void)?
-    var onError: ((DataServiceError) -> Void)?
     
     var bookTitle: String {
         return currentBook?.title ?? "title not available"
@@ -64,6 +63,16 @@ final class BookViewModel {
         return books.count
     }
     
+    // MARK: - Closures
+    var onDataLoaded: (() -> Void)?
+    var onError: ((DataServiceError) -> Void)?
+    
+    // MARK: - Initializers
+    init(bookRepository: BookRepository) {
+        self.bookRepository = bookRepository
+    }
+    
+    // MARK: - Public Methods
     func loadBooks() {
         let result = bookRepository.loadBooks()
         
@@ -89,15 +98,12 @@ final class BookViewModel {
         }
     }
     
+    // MARK: - UserDefaults Methods
     func loadSummaryExpandedState() -> Bool {
         return UserDefaultsManager.shared.loadSummaryState(of: bookTitle)
     }
     
     func saveSummaryExpandedState(_ isExpanded: Bool) {
         UserDefaultsManager.shared.saveSummaryState(isExpanded, of: bookTitle)
-    }
-    
-    init(bookRepository: BookRepository) {
-        self.bookRepository = bookRepository
     }
 }

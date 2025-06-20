@@ -10,19 +10,25 @@ import SnapKit
 import Then
 
 final class InfoStackView: UIView {
-    private let titleLabel = UILabel()
-    private let contentLabel = UILabel().then {
-        $0.numberOfLines = 0
-    }
-    private let stackView = UIStackView().then {
-        $0.spacing = 8
-    }
     
+    // MARK: - Properties
     var content: String? {
         get { contentLabel.text }
         set { contentLabel.text = newValue }
     }
     
+    // MARK: - UI Components
+    private let titleLabel = UILabel()
+    
+    private let contentLabel = UILabel().then {
+        $0.numberOfLines = 0
+    }
+    
+    private let stackView = UIStackView().then {
+        $0.spacing = 8
+    }
+    
+    // MARK: - Initializers
     init(
         axis: NSLayoutConstraint.Axis = .horizontal,
         title: String,
@@ -45,6 +51,7 @@ final class InfoStackView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - Setup Methods
     private func setupView(
         axis: NSLayoutConstraint.Axis,
         title: String,
