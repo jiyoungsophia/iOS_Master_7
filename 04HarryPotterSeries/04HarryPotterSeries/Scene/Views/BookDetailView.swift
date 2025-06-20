@@ -10,13 +10,15 @@ import SnapKit
 import Then
 
 class BookDetailView: UIView {
+    
+    // MARK: - UI Components - Container Views
     private let scrollView = UIScrollView().then {
         $0.showsVerticalScrollIndicator = false
     }
     
     private let contentView = UIView()
     
-    // MARK: - 책 정보 영역
+    // MARK: - UI Components - Book Info Section
     let bookImageView = UIImageView().then {
         $0.contentMode = .scaleAspectFit
         $0.clipsToBounds = true
@@ -46,6 +48,7 @@ class BookDetailView: UIView {
         title: "Pages",
     )
     
+    // MARK: - UI Components - Stack Views
     private let labelVStackView = UIStackView().then {
         $0.axis = .vertical
         $0.spacing = 8
@@ -57,7 +60,7 @@ class BookDetailView: UIView {
         $0.alignment = .top
     }
     
-    // MARK: - dedication, summary, chapters
+    // MARK: - UI Components - Content Sections
     let dedicationView = InfoStackView(
         axis: .vertical,
         title: "Dedication",
@@ -73,6 +76,7 @@ class BookDetailView: UIView {
     }
     
     
+    // MARK: - Initializers
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -83,7 +87,7 @@ class BookDetailView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    
+    // MARK: - Setup Methods
     func setupView() {
         backgroundColor = .white
         
@@ -102,7 +106,6 @@ class BookDetailView: UIView {
         
         contentView.addSubview(infoHStackView)
         contentView.addSubview(contentHStackView)
-        
     }
     
     func setupConstraints() {

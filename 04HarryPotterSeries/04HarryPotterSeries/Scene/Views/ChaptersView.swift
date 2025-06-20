@@ -8,6 +8,15 @@
 import UIKit
 
 final class ChaptersView: UIView {
+    
+    // MARK: - Properties
+    var chapters: [String] = [] {
+        didSet {
+            updateChapters()
+        }
+    }
+    
+    // MARK: - UI Components
     private let titleLabel = UILabel().then {
         $0.text = "Chapters"
         $0.font = .boldSystemFont(ofSize: 18)
@@ -20,12 +29,7 @@ final class ChaptersView: UIView {
         $0.distribution = .fill
     }
     
-    var chapters: [String] = [] {
-        didSet {
-            updateChapters()
-        }
-    }
-    
+    // MARK: - Initializers
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -36,6 +40,7 @@ final class ChaptersView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - Setup Methods
     private func setupView() {
         backgroundColor = .clear
         addSubview(titleLabel)

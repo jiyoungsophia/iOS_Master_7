@@ -13,6 +13,8 @@ final class UserDefaultsManager {
     
     private let userDefaults = UserDefaults.standard
     
+    private init() {} 
+    
     func saveSummaryState(_ isExpanded: Bool, of bookTitle: String) {
         let key = "summary_state_\(bookTitle)"
         userDefaults.set(isExpanded, forKey: key)
