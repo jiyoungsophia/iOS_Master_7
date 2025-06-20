@@ -84,6 +84,10 @@ class BookViewController: UIViewController {
         viewModel.onError = { [weak self] error in
             self?.showErrorAlert(error: error)
         }
+        
+        bookDetailView.summaryView.onExpandedStateChanged = { [weak self] isExpanded in
+            self?.viewModel.saveSummaryExpandedState(isExpanded)
+        }
     }
     
     private func updateUI() {
@@ -97,6 +101,7 @@ class BookViewController: UIViewController {
         bookDetailView.bookImageView.image = UIImage(named: viewModel.bookImageName)
         bookDetailView.dedicationView.content  = viewModel.dedication
         bookDetailView.summaryView.content  = viewModel.summary
+        bookDetailView.summaryView.initialExpandedState = viewModel.loadSummaryExpandedState()
         bookDetailView.chaptersView.chapters = viewModel.chapters
     }
     

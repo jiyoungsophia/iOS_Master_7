@@ -64,12 +64,7 @@ class BookDetailView: UIView {
         titleFont: .boldSystemFont(ofSize: 18),
     )
     
-    let summaryView = InfoStackView(
-        axis: .vertical,
-        title: "Summary",
-        titleFont: .boldSystemFont(ofSize: 18),
-    )
-    
+    let summaryView = SummaryView()
     let chaptersView = ChaptersView()
     
     private let contentHStackView = UIStackView().then {
