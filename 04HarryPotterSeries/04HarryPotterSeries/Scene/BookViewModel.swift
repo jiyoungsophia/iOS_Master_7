@@ -11,6 +11,7 @@ final class BookViewModel {
     
     // MARK: - Properties
     private let bookRepository: BookRepository
+    private let userDefaultsRepository: UserDefaultsRepository
     private var books: [Book] = []
     private(set) var selectedBookIndex: Int = 0
     
@@ -35,13 +36,14 @@ final class BookViewModel {
     }
     
     var releaseDate: String {
-        return DateFormatter.enDateFormatter.string(from: currentBook?.releaseDate ?? Date())
+        return "\(currentBook?.releaseDate ?? Date(), format: "MMM dd, yyyy")"
     }
     
     var pages: String {
         return "\(currentBook?.pages ?? 0)"
     }
     
+    @inlinable
     var bookImageName: String {
         return "harrypotter\(selectedBookIndex + 1)"
     }
@@ -58,6 +60,7 @@ final class BookViewModel {
         return currentBook?.chapters ?? []
     }
     
+    @inlinable
     var totalBooksCount: Int {
         return books.count
     }
@@ -67,8 +70,9 @@ final class BookViewModel {
     var onError: ((DataServiceError) -> Void)?
     
     // MARK: - Initializers
-    init(bookRepository: BookRepository) {
+    init(bookRepository: BookRepository, userDefaultsRepository: UserDefaultsRepository) {
         self.bookRepository = bookRepository
+        self.userDefaultsRepository = userDefaultsRepository
     }
     
     // MARK: - Public Methods
@@ -95,10 +99,10 @@ final class BookViewModel {
     
     // MARK: - UserDefaults Methods
     func loadSummaryExpandedState() -> Bool {
-        return UserDefaultsManager.shared.loadSummaryState(of: bookTitle)
+        return userDefaultsRepository.loadSummaryState(of: bookTitle)
     }
     
     func saveSummaryExpandedState(_ isExpanded: Bool) {
-        UserDefaultsManager.shared.saveSummaryState(isExpanded, of: bookTitle)
+        userDefaultsRepository.saveSummaryState(isExpanded, of: bookTitle)
     }
 }

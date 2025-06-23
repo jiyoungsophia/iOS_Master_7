@@ -6,7 +6,7 @@
 //
 
 import Foundation
-//string inteplation
+
 extension DateFormatter {
     static let longDateFormatter: DateFormatter = {
         let formatter = DateFormatter()

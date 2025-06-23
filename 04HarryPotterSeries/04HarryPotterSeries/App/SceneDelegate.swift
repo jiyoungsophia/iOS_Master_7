@@ -20,7 +20,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // 의존성 주입
         let jsonDataService = JSONDataServiceImp()
         let bookRepository = BookRepositoryImp(jsonDataService: jsonDataService)
-        let viewModel = BookViewModel(bookRepository: bookRepository)
+        let userDefaultsRepository = UserDefaultsRepositoryImp()
+        let viewModel = BookViewModel(bookRepository: bookRepository,
+                                      userDefaultsRepository: userDefaultsRepository)
         
         // window 에게 루트 뷰 지정.
         window.rootViewController = BookViewController(viewModel: viewModel)

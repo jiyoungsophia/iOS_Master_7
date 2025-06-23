@@ -27,7 +27,7 @@ final class JSONDataServiceImp: JSONDataService {
         
         do {
             let data = try Data(contentsOf: url)
-            let decoder = JSONDecoder()
+            lazy var decoder = JSONDecoder()
             return try decoder.decode(BookResponseDTO.self, from: data)
         } catch let decodingError as DecodingError {
             throw DataServiceError.decodingFailed(decodingError)
