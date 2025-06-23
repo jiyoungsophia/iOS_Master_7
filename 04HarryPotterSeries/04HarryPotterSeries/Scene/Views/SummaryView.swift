@@ -42,26 +42,26 @@ final class SummaryView: UIView {
     var onExpandedStateChanged: ((Bool) -> Void)?
     
     // MARK: - UI Components
-    private let titleLabel = UILabel().then {
+    private lazy var titleLabel = UILabel().then {
         $0.text = "Summary"
         $0.font = .boldSystemFont(ofSize: 18)
         $0.textColor = .black
     }
     
-    private let contentLabel = UILabel().then {
+    private lazy var contentLabel = UILabel().then {
         $0.font = .systemFont(ofSize: 14)
         $0.textColor = .gray
         $0.numberOfLines = 0
     }
     
-    private let toggleButton = UIButton().then {
+    private lazy var toggleButton = UIButton().then {
         $0.setTitle("Show more", for: .normal)
         $0.setTitleColor(.systemBlue, for: .normal)
         $0.titleLabel?.font = .systemFont(ofSize: 14)
         $0.contentHorizontalAlignment = .trailing
     }
     
-    private let summaryVStackView = UIStackView().then {
+    private lazy var summaryVStackView = UIStackView().then {
         $0.axis = .vertical
         $0.spacing = 8
     }

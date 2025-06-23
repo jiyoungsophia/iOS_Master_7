@@ -17,13 +17,13 @@ final class ChaptersView: UIView {
     }
     
     // MARK: - UI Components
-    private let titleLabel = UILabel().then {
+    private lazy var titleLabel = UILabel().then {
         $0.text = "Chapters"
         $0.font = .boldSystemFont(ofSize: 18)
         $0.textColor = .black
     }
     
-    private let chapterVStackView = UIStackView().then {
+    private lazy var chapterVStackView = UIStackView().then {
         $0.axis = .vertical
         $0.spacing = 8
         $0.distribution = .fill

@@ -1,20 +1,19 @@
 //
-//  UserDefaultsManager.swift
+//  UserDefaultsRepositoryImp.swift
 //  04HarryPotterSeries
 //
-//  Created by Milou on 6/20/25.
+//  Created by Milou on 6/23/25.
 //
 
 import Foundation
 
+final class UserDefaultsRepositoryImp: UserDefaultsRepository {
+    private let userDefaults: UserDefaults
+    
+    init(userDefaults: UserDefaults = .standard) {
+        self.userDefaults = userDefaults
+    }
 
-final class UserDefaultsManager {
-    static let shared = UserDefaultsManager()
-    
-    private let userDefaults = UserDefaults.standard
-    
-    private init() {} 
-    
     func saveSummaryState(_ isExpanded: Bool, of bookTitle: String) {
         let key = "summary_state_\(bookTitle)"
         userDefaults.set(isExpanded, forKey: key)
