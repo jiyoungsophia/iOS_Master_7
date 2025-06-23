@@ -12,25 +12,25 @@ import Then
 class BookDetailView: UIView {
     
     // MARK: - UI Components - Container Views
-    private let scrollView = UIScrollView().then {
+    private lazy var scrollView = UIScrollView().then {
         $0.showsVerticalScrollIndicator = false
     }
     
-    private let contentView = UIView()
+    private lazy var contentView = UIView()
     
     // MARK: - UI Components - Book Info Section
-    let bookImageView = UIImageView().then {
+    lazy var bookImageView = UIImageView().then {
         $0.contentMode = .scaleAspectFit
         $0.clipsToBounds = true
     }
     
-    let bookTitleLabel = UILabel().then {
+    lazy var bookTitleLabel = UILabel().then {
         $0.font = .systemFont(ofSize: 20, weight: .bold)
         $0.textColor = .black
         $0.numberOfLines = 0
     }
     
-    let authorRowView = InfoStackView(
+    lazy var authorRowView = InfoStackView(
         axis: .horizontal,
         title: "Author",
         titleFont: .boldSystemFont(ofSize: 16),
@@ -38,43 +38,42 @@ class BookDetailView: UIView {
         contentColor: .darkGray
     )
     
-    let releasedRowView = InfoStackView(
+    lazy var releasedRowView = InfoStackView(
         axis: .horizontal,
         title: "Released",
     )
     
-    let pagesRowView = InfoStackView(
+    lazy var pagesRowView = InfoStackView(
         axis: .horizontal,
         title: "Pages",
     )
     
     // MARK: - UI Components - Stack Views
-    private let labelVStackView = UIStackView().then {
+    private lazy var labelVStackView = UIStackView().then {
         $0.axis = .vertical
         $0.spacing = 8
     }
     
-    private let infoHStackView = UIStackView().then {
+    private lazy var infoHStackView = UIStackView().then {
         $0.axis = .horizontal
         $0.spacing = 16
         $0.alignment = .top
     }
     
     // MARK: - UI Components - Content Sections
-    let dedicationView = InfoStackView(
+    lazy var dedicationView = InfoStackView(
         axis: .vertical,
         title: "Dedication",
         titleFont: .boldSystemFont(ofSize: 18),
     )
     
-    let summaryView = SummaryView()
-    let chaptersView = ChaptersView()
+    lazy var summaryView = SummaryView()
+    lazy var chaptersView = ChaptersView()
     
-    private let contentHStackView = UIStackView().then {
+    private lazy var contentHStackView = UIStackView().then {
         $0.axis = .vertical
         $0.spacing = 24
     }
-    
     
     // MARK: - Initializers
     override init(frame: CGRect) {
