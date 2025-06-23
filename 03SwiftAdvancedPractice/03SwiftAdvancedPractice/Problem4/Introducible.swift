@@ -26,10 +26,10 @@ func testIntroducible() {
         if let robot = item as? Robot {
             print(robot.batteryCharge())
         }
-        else if let cat = item as? Cat {
+        if let cat = item as? Cat {
             print(cat.makeSound())
         }
-        else if let dog = item as? Dog {
+        if let dog = item as? Dog {
             print(dog.goForWalk())
         }
     }

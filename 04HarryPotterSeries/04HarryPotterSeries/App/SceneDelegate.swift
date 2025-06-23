@@ -17,15 +17,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: windowScene)
         
-        // 의존성 주입
-        let jsonDataService = JSONDataServiceImp()
-        let bookRepository = BookRepositoryImp(jsonDataService: jsonDataService)
-        let userDefaultsRepository = UserDefaultsRepositoryImp()
-        let viewModel = BookViewModel(bookRepository: bookRepository,
-                                      userDefaultsRepository: userDefaultsRepository)
-        
         // window 에게 루트 뷰 지정.
-        window.rootViewController = BookViewController(viewModel: viewModel)
+        window.rootViewController = ViewController()
         
         // 이 메서드를 반드시 작성해줘야 윈도우가 활성화 됨.
         window.makeKeyAndVisible()
