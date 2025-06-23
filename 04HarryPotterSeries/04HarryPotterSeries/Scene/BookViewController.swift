@@ -118,7 +118,7 @@ class BookViewController: UIViewController {
     private func createSeriesButtons(count: Int) {
         seriesStackView.clearArrangedSubviews()
         
-        seriesStackView.addArrangedSubviews(from: Array(0..<count)) { _, index in
+        seriesStackView.addArrangedSubviews(from: 0..<count) { _, index in
             let button = UIButton().then {
                 $0.setTitle("\(index + 1)", for: .normal)
                 $0.titleLabel?.font = .systemFont(ofSize: 16)

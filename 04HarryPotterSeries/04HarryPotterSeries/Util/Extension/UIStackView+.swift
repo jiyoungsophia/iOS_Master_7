@@ -15,10 +15,11 @@ extension UIStackView {
         }
     }
     
-    func addArrangedSubviews<T>(from data: [T], viewBuilder: (T, Int) -> UIView) {
+    func addArrangedSubviews<T: Sequence>(from data: T, viewBuilder: (T.Element, Int) -> UIView) {
         data.enumerated().forEach { index, item in
             let view = viewBuilder(item, index)
             addArrangedSubview(view)
         }
     }
 }
+
