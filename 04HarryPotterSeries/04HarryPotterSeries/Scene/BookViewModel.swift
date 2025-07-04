@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+//uixxx 데이터만 처리 -> vc
 final class BookViewModel {
     
     // MARK: - Properties

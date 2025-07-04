@@ -18,13 +18,13 @@ final class InfoStackView: UIView {
     }
     
     // MARK: - UI Components
-    private lazy var titleLabel = UILabel()
+    private let titleLabel = UILabel()
     
-    private lazy var contentLabel = UILabel().then {
+    private let contentLabel = UILabel().then {
         $0.numberOfLines = 0
     }
     
-    private lazy var stackView = UIStackView().then {
+    private let stackView = UIStackView().then {
         $0.spacing = 8
     }
     

@@ -14,7 +14,7 @@ class BookViewController: UIViewController {
     private let viewModel: BookViewModel
     
     // MARK: - UI Components
-    private lazy var titleLabel = UILabel().then {
+    private let titleLabel = UILabel().then {
         $0.textAlignment = .center
         $0.font = .systemFont(ofSize: 24, weight: .bold)
         $0.numberOfLines = 0
@@ -22,14 +22,14 @@ class BookViewController: UIViewController {
     
     private var seriesButtons: [UIButton] = []
 
-    private lazy var seriesStackView = UIStackView().then {
+    private let seriesStackView = UIStackView().then {
         $0.axis = .horizontal
         $0.spacing = 8
         $0.distribution = .fillEqually
         $0.alignment = .center
     }
     
-    private lazy var bookDetailView = BookDetailView()
+    private let bookDetailView = BookDetailView()
     
     // MARK: - Initializers
     init(viewModel: BookViewModel) {
