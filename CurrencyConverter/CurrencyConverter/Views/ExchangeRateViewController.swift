@@ -10,8 +10,8 @@ import SnapKit
 import Then
 
 class ExchangeRateViewController: UIViewController {
-    
-    private var exchangeRates: [ExchangeRate] = []
+        
+    private let viewModel = ExchangeRateViewModel()
     
     private let tableView = UITableView().then {
         $0.backgroundColor = .background
@@ -23,20 +23,9 @@ class ExchangeRateViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         setupTableView()
-        loadMockData()
+        setupBinding()
         
-//        Task {
-//            let service = ExchangeRateService()
-//            let result = await service.fetchExchangeRate()
-//            
-//            switch result {
-//            case .success(let rates):
-//                print("✅ 성공! \(rates.count)개 환율 받음")
-//                rates.prefix(5).forEach { print("  \($0.currency): \($0.rate)") }
-//            case .failure(let error):
-//                print("❌ 실패: \(error)")
-//            }
-//        }
+        viewModel.loadExchangeRates()
     }
     
     private func setupUI() {
@@ -53,27 +42,34 @@ class ExchangeRateViewController: UIViewController {
         tableView.delegate = self
     }
     
-    private func loadMockData() {
-        // 임시 목 데이터
-        exchangeRates = [
-            ExchangeRate(currency: "USD", rate: 1.0000),
-            ExchangeRate(currency: "KRW", rate: 1340.50),
-            ExchangeRate(currency: "JPY", rate: 151.23),
-            ExchangeRate(currency: "EUR", rate: 0.8542),
-            ExchangeRate(currency: "GBP", rate: 0.7321),
-            ExchangeRate(currency: "CNY", rate: 7.2156),
-            ExchangeRate(currency: "CAD", rate: 1.3421),
-            ExchangeRate(currency: "AUD", rate: 1.5234)
-        ]
+    private func setupBinding() {
+        viewModel.onExchangeRateChanged = { [weak self] in
+             DispatchQueue.main.async {
+                 self?.tableView.reloadData()
+             }
+         }
         
-        tableView.reloadData()
+        viewModel.onErrorOccurred = { [weak self] errorMessage in
+            DispatchQueue.main.async {
+                self?.showErrorAlert(errorMessage)
+            }
+        }
     }
-
+    
+    private func showErrorAlert(_ message: String) {
+        let alert = UIAlertController(
+            title: "오류",
+            message: message,
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "확인", style: .default))
+        present(alert, animated: true)
+    }
 }
 
 extension ExchangeRateViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return exchangeRates.count
+        return viewModel.exchangeRates.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -84,7 +80,7 @@ extension ExchangeRateViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        let exchangeRate = exchangeRates[indexPath.row]
+        let exchangeRate = viewModel.exchangeRates[indexPath.row]
         cell.configure(exchangeRate)
         return cell
     }

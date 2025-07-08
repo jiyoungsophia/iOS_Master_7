@@ -41,6 +41,8 @@ class ExchangeRateTableViewCell: UITableViewCell {
     }
     
     private func setupUI() {
+        backgroundColor = .background
+        
         contentView.addSubview(stackView)
         stackView.addArrangedSubview(currencyLabel)
         stackView.addArrangedSubview(rateLabel)
@@ -48,13 +50,10 @@ class ExchangeRateTableViewCell: UITableViewCell {
         stackView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
-        
-        backgroundColor = .background
     }
 
     func configure(_ exchangeRate: ExchangeRate) {
         currencyLabel.text = exchangeRate.currency
         rateLabel.text = String(format: "%.4f", exchangeRate.rate)
     }
-    
 }
