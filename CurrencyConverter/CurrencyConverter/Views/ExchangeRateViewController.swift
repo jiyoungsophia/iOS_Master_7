@@ -24,6 +24,19 @@ class ExchangeRateViewController: UIViewController {
         setupUI()
         setupTableView()
         loadMockData()
+        
+//        Task {
+//            let service = ExchangeRateService()
+//            let result = await service.fetchExchangeRate()
+//            
+//            switch result {
+//            case .success(let rates):
+//                print("✅ 성공! \(rates.count)개 환율 받음")
+//                rates.prefix(5).forEach { print("  \($0.currency): \($0.rate)") }
+//            case .failure(let error):
+//                print("❌ 실패: \(error)")
+//            }
+//        }
     }
     
     private func setupUI() {
@@ -43,14 +56,14 @@ class ExchangeRateViewController: UIViewController {
     private func loadMockData() {
         // 임시 목 데이터
         exchangeRates = [
-            ExchangeRate(currencyCode: "USD", rate: 1.0000),
-            ExchangeRate(currencyCode: "KRW", rate: 1340.50),
-            ExchangeRate(currencyCode: "JPY", rate: 151.23),
-            ExchangeRate(currencyCode: "EUR", rate: 0.8542),
-            ExchangeRate(currencyCode: "GBP", rate: 0.7321),
-            ExchangeRate(currencyCode: "CNY", rate: 7.2156),
-            ExchangeRate(currencyCode: "CAD", rate: 1.3421),
-            ExchangeRate(currencyCode: "AUD", rate: 1.5234)
+            ExchangeRate(currency: "USD", rate: 1.0000),
+            ExchangeRate(currency: "KRW", rate: 1340.50),
+            ExchangeRate(currency: "JPY", rate: 151.23),
+            ExchangeRate(currency: "EUR", rate: 0.8542),
+            ExchangeRate(currency: "GBP", rate: 0.7321),
+            ExchangeRate(currency: "CNY", rate: 7.2156),
+            ExchangeRate(currency: "CAD", rate: 1.3421),
+            ExchangeRate(currency: "AUD", rate: 1.5234)
         ]
         
         tableView.reloadData()

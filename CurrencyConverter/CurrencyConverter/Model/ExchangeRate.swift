@@ -8,6 +8,6 @@
 import Foundation
 
 struct ExchangeRate: Codable {
-    let currencyCode: String
+    let currency: String
     let rate: Double
 }
