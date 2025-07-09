@@ -12,7 +12,7 @@ class ExchangeRateViewModel {
     
     private var allExchangeRates: [ExchangeRate] = []
     
-    private(set) var exchangeRates: [ExchangeRate] = [] {
+    private(set) var filteredExchangeRates: [ExchangeRate] = [] {
         didSet {
             self.onExchangeRateChanged?()
         }
@@ -36,21 +36,21 @@ class ExchangeRateViewModel {
             switch result {
             case .success(let rates):
                 self?.allExchangeRates = rates
-                self?.exchangeRates = rates
+                self?.filteredExchangeRates = rates
                 
             case .failure(let error):
                 self?.errorMessage = error.localizedDescription
                 self?.allExchangeRates = []
-                self?.exchangeRates = []
+                self?.filteredExchangeRates = []
             }
         }
     }
     
     func filterExchangeRates(with searchText: String) {
         if searchText.isEmpty {
-            exchangeRates = allExchangeRates
+            filteredExchangeRates = allExchangeRates
         } else {
-            exchangeRates = allExchangeRates.filter { rate in
+            filteredExchangeRates = allExchangeRates.filter { rate in
                 rate.currency.localizedCaseInsensitiveContains(searchText) || rate.country.localizedCaseInsensitiveContains(searchText)
             }
         }

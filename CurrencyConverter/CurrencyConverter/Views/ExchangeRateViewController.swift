@@ -74,7 +74,7 @@ class ExchangeRateViewController: UIViewController {
     private func updateTableView() {
         tableView.reloadData()
         
-        let isEmpty = viewModel.exchangeRates.isEmpty
+        let isEmpty = viewModel.filteredExchangeRates.isEmpty
         let isSearching = !(searchBar.text?.isEmpty ?? true)
         
         if isEmpty && isSearching {
@@ -114,7 +114,7 @@ class ExchangeRateViewController: UIViewController {
 
 extension ExchangeRateViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.exchangeRates.count
+        return viewModel.filteredExchangeRates.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -126,11 +126,11 @@ extension ExchangeRateViewController: UITableViewDataSource {
         }
         
         // 간헐적으로 나타나는 크래시 예방
-        guard indexPath.row < viewModel.exchangeRates.count else {
+        guard indexPath.row < viewModel.filteredExchangeRates.count else {
             return cell
         }
         
-        let exchangeRate = viewModel.exchangeRates[indexPath.row]
+        let exchangeRate = viewModel.filteredExchangeRates[indexPath.row]
         cell.configure(exchangeRate)
         return cell
     }
