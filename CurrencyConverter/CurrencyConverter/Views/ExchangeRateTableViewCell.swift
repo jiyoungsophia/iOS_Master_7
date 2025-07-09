@@ -18,18 +18,21 @@ class ExchangeRateTableViewCell: UITableViewCell {
         $0.textColor = .text
     }
     
+    private let countryLabel = UILabel().then {
+        $0.font = .systemFont(ofSize: 14)
+    }
+    
+    private let labelVStackView = UIStackView().then {
+        $0.axis = .vertical
+        $0.spacing = 4
+    }
+    
     private let rateLabel = UILabel().then {
         $0.font = .systemFont(ofSize: 16)
         $0.textColor = .gray
         $0.textAlignment = .right
     }
     
-    private let stackView = UIStackView().then {
-        $0.axis = .horizontal
-        $0.distribution = .fill
-        $0.alignment = .center
-        $0.spacing = 16
-    }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -43,17 +46,33 @@ class ExchangeRateTableViewCell: UITableViewCell {
     private func setupUI() {
         backgroundColor = .background
         
-        contentView.addSubview(stackView)
-        stackView.addArrangedSubview(currencyLabel)
-        stackView.addArrangedSubview(rateLabel)
+        labelVStackView.addArrangedSubview(currencyLabel)
+        labelVStackView.addArrangedSubview(countryLabel)
         
-        stackView.snp.makeConstraints {
+        contentView.addSubview(labelVStackView)
+        contentView.addSubview(rateLabel)
+        
+        contentView.snp.makeConstraints {
             $0.edges.equalToSuperview()
+            $0.height.equalTo(60)
+        }
+        
+        labelVStackView.snp.makeConstraints {
+            $0.leading.equalToSuperview().offset(16)
+            $0.centerY.equalToSuperview()
+        }
+        
+        rateLabel.snp.makeConstraints {
+            $0.trailing.equalToSuperview().inset(16)
+            $0.centerY.equalToSuperview()
+            $0.leading.greaterThanOrEqualTo(labelVStackView.snp.trailing).offset(16)
+            $0.width.equalTo(120)
         }
     }
-
+    
     func configure(_ exchangeRate: ExchangeRate) {
         currencyLabel.text = exchangeRate.currency
         rateLabel.text = String(format: "%.4f", exchangeRate.rate)
+        countryLabel.text = exchangeRate.currency.toCountryName
     }
 }

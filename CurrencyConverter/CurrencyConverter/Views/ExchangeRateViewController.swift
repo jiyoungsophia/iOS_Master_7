@@ -13,9 +13,13 @@ class ExchangeRateViewController: UIViewController {
         
     private let viewModel = ExchangeRateViewModel()
     
+    private let searchBar = UISearchBar().then {
+        $0.backgroundColor = .background
+        $0.placeholder = "통화 검색"
+    }
+    
     private let tableView = UITableView().then {
         $0.backgroundColor = .background
-        $0.rowHeight = 60
         $0.register(ExchangeRateTableViewCell.self, forCellReuseIdentifier: ExchangeRateTableViewCell.identifier)
     }
 
@@ -29,11 +33,17 @@ class ExchangeRateViewController: UIViewController {
     }
     
     private func setupUI() {
-        [tableView]
+        [searchBar, tableView]
             .forEach { view.addSubview($0) }
         
+        searchBar.snp.makeConstraints {
+            $0.top.equalTo(view.safeAreaLayoutGuide)
+            $0.horizontalEdges.equalToSuperview()
+        }
+        
         tableView.snp.makeConstraints {
-            $0.edges.equalTo(view.safeAreaLayoutGuide)
+            $0.top.equalTo(searchBar.snp.bottom)
+            $0.horizontalEdges.bottom.equalTo(view.safeAreaLayoutGuide)
         }
     }
     
