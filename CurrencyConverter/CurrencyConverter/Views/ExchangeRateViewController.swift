@@ -10,29 +10,33 @@ import SnapKit
 import Then
 
 class ExchangeRateViewController: UIViewController {
-        
+    
     private let viewModel = ExchangeRateViewModel()
     
     private let searchBar = UISearchBar().then {
         $0.backgroundColor = .background
         $0.placeholder = "통화 검색"
+        $0.searchBarStyle = .minimal
     }
     
     private let tableView = UITableView().then {
         $0.backgroundColor = .background
+        $0.rowHeight = 60
         $0.register(ExchangeRateTableViewCell.self, forCellReuseIdentifier: ExchangeRateTableViewCell.identifier)
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        setupTableView()
+        setupDelegate()
         setupBinding()
         
         viewModel.loadExchangeRates()
     }
     
     private func setupUI() {
+        view.backgroundColor = .systemBackground
+        
         [searchBar, tableView]
             .forEach { view.addSubview($0) }
         
@@ -47,23 +51,54 @@ class ExchangeRateViewController: UIViewController {
         }
     }
     
-    private func setupTableView() {
+    private func setupDelegate() {
         tableView.dataSource = self
         tableView.delegate = self
+        searchBar.delegate = self
     }
     
     private func setupBinding() {
         viewModel.onExchangeRateChanged = { [weak self] in
-             DispatchQueue.main.async {
-                 self?.tableView.reloadData()
-             }
-         }
+            DispatchQueue.main.async {
+                self?.updateTableView()
+            }
+        }
         
         viewModel.onErrorOccurred = { [weak self] errorMessage in
             DispatchQueue.main.async {
                 self?.showErrorAlert(errorMessage)
             }
         }
+    }
+    
+    private func updateTableView() {
+        tableView.reloadData()
+        
+        let isEmpty = viewModel.filteredExchangeRates.isEmpty
+        let isSearching = !(searchBar.text?.isEmpty ?? true)
+        
+        if isEmpty && isSearching {
+            showEmptyState()
+        } else {
+            hideEmptyState()
+        }
+    }
+    
+    private func showEmptyState() {
+        let emptyLabel = UILabel().then {
+            $0.text = "검색 결과 없음"
+            $0.textColor = .secondaryLabel
+            $0.textAlignment = .center
+            $0.font = .systemFont(ofSize: 18, weight: .medium)
+        }
+        
+        tableView.backgroundView = emptyLabel
+        tableView.separatorStyle = .none
+    }
+    
+    private func hideEmptyState() {
+        tableView.backgroundView = nil
+        tableView.separatorStyle = .singleLine
     }
     
     private func showErrorAlert(_ message: String) {
@@ -79,7 +114,7 @@ class ExchangeRateViewController: UIViewController {
 
 extension ExchangeRateViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.exchangeRates.count
+        return viewModel.filteredExchangeRates.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -90,7 +125,12 @@ extension ExchangeRateViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        let exchangeRate = viewModel.exchangeRates[indexPath.row]
+        // 간헐적으로 나타나는 크래시 예방
+        guard indexPath.row < viewModel.filteredExchangeRates.count else {
+            return cell
+        }
+        
+        let exchangeRate = viewModel.filteredExchangeRates[indexPath.row]
         cell.configure(exchangeRate)
         return cell
     }
@@ -98,4 +138,28 @@ extension ExchangeRateViewController: UITableViewDataSource {
 
 extension ExchangeRateViewController: UITableViewDelegate {
     
+}
+
+extension ExchangeRateViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        viewModel.filterExchangeRates(with: searchText)
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+    }
+    
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchBar.showsCancelButton = true
+    }
+    
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        searchBar.showsCancelButton = false
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = ""
+        searchBar.resignFirstResponder()
+        viewModel.filterExchangeRates(with: "")
+    }
 }
