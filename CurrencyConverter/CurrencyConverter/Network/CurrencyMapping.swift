@@ -8,13 +8,12 @@
 import Foundation
 
 enum CurrencyMapping {
-    private static var cache: [String: String]?
+    private static let memoizedgetCountryName = memoize { (currency: String) in
+        loadMapping()[currency] ?? currency
+    }
     
-    static func getCountryName(for currencyCode: String) -> String {
-        if cache == nil {
-            cache = loadMapping() 
-        }
-        return cache?[currencyCode] ?? currencyCode
+    static func getCountryName(from currencyCode: String) -> String {
+        return memoizedgetCountryName(currencyCode)
     }
     
     private static func loadMapping() -> [String: String] {

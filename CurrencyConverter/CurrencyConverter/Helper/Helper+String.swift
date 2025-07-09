@@ -9,6 +9,6 @@ import Foundation
 
 extension String  {
     var toCountryName: String {
-        return CurrencyMapping.getCountryName(for: self)
+        return CurrencyMapping.getCountryName(from: self)
     }
 }
