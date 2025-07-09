@@ -10,7 +10,7 @@ import SnapKit
 import Then
 
 class ExchangeRateViewController: UIViewController {
-        
+    
     private let viewModel = ExchangeRateViewModel()
     
     private let searchBar = UISearchBar().then {
@@ -23,7 +23,7 @@ class ExchangeRateViewController: UIViewController {
         $0.rowHeight = 60
         $0.register(ExchangeRateTableViewCell.self, forCellReuseIdentifier: ExchangeRateTableViewCell.identifier)
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
@@ -57,15 +57,11 @@ class ExchangeRateViewController: UIViewController {
     
     private func setupBinding() {
         viewModel.onExchangeRateChanged = { [weak self] in
-             DispatchQueue.main.async {
-                 self?.tableView.reloadData()
-             }
-         }
+            self?.tableView.reloadData()
+        }
         
         viewModel.onErrorOccurred = { [weak self] errorMessage in
-            DispatchQueue.main.async {
-                self?.showErrorAlert(errorMessage)
-            }
+            self?.showErrorAlert(errorMessage)
         }
     }
     

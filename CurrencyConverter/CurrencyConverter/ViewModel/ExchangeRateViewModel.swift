@@ -7,20 +7,26 @@
 
 import Foundation
 
+
+
 @MainActor
 class ExchangeRateViewModel {
     private let exchangeRateService = ExchangeRateService()
     
     private(set) var exchangeRates: [ExchangeRate] = [] {
         didSet {
-            onExchangeRateChanged?()
+            DispatchQueue.main.async { [weak self] in
+                self?.onExchangeRateChanged?()
+            }
         }
     }
     
     private(set) var errorMessage: String? {
         didSet {
             if let errorMessage = errorMessage {
-                onErrorOccurred?(errorMessage)
+                DispatchQueue.main.async { [weak self] in
+                    self?.onErrorOccurred?(errorMessage)
+                }
             }
         }
     }
@@ -31,15 +37,14 @@ class ExchangeRateViewModel {
     func loadExchangeRates() {
         errorMessage = nil
         
-        Task {
-            let result = await exchangeRateService.fetchExchangeRate()
-            
+        exchangeRateService.fetchExchangeRate { [weak self] result in
             switch result {
             case .success(let rates):
-                exchangeRates = rates
+                self?.exchangeRates = rates
+                
             case .failure(let error):
-                errorMessage = error.localizedDescription
-                exchangeRates = []
+                self?.errorMessage = error.localizedDescription
+                self?.exchangeRates = []
             }
         }
     }

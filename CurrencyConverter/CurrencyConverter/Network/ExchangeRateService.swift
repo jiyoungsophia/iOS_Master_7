@@ -11,20 +11,24 @@ class ExchangeRateService {
     private let networkClient = NetworkClient.shared
     private let baseURL = "https://api.exchangerate-api.com/v4/latest"
     
-    func fetchExchangeRate(baseCurrency: String  = "KRW") async -> Result<[ExchangeRate], NetworkError> {
+    func fetchExchangeRate(
+        baseCurrency: String = "KRW",
+        completion: @escaping (Result<[ExchangeRate], NetworkError>) -> Void
+    ) {
         guard let url = URL(string: "\(baseURL)/\(baseCurrency)") else {
-            return .failure(.httpResponseError)
+            completion(.failure(.httpResponseError))
+            return
         }
         
-        let result: Result<ExchangeRateResponse, NetworkError> = await networkClient.fetchData(url: url)
-        
-        switch result {
-        case .success(let response):
-            let exchangeRates = response.toExchangeRates()
-            return .success(exchangeRates)
-            
-        case .failure(let error):
-            return .failure(error)
+        networkClient.fetchData(url: url) { (result: Result<ExchangeRateResponse, NetworkError>) in
+            switch result {
+            case .success(let response):
+                let exchangeRates = response.toExchangeRates()
+                completion(.success(exchangeRates))
+                
+            case .failure(let error):
+                completion(.failure(error))
+            }
         }
     }
 }
