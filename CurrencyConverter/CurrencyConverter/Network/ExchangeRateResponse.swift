@@ -12,7 +12,11 @@ struct ExchangeRateResponse: Codable {
     
     func toExchangeRates() -> [ExchangeRate] {
         return rates.map { (currency, rate) in
-            ExchangeRate(currency: currency, rate: rate)
-        }
+            ExchangeRate(
+                currency: currency,
+                country: currency.toCountryName,
+                rate: rate
+            )
+        }.sorted { $0.currency < $1.currency }
     }
 }
