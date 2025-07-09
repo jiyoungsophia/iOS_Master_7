@@ -20,6 +20,7 @@ class ExchangeRateViewController: UIViewController {
     
     private let tableView = UITableView().then {
         $0.backgroundColor = .background
+        $0.rowHeight = 60
         $0.register(ExchangeRateTableViewCell.self, forCellReuseIdentifier: ExchangeRateTableViewCell.identifier)
     }
 
@@ -33,6 +34,8 @@ class ExchangeRateViewController: UIViewController {
     }
     
     private func setupUI() {
+        view.backgroundColor = .systemBackground
+        
         [searchBar, tableView]
             .forEach { view.addSubview($0) }
         

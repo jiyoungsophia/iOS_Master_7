@@ -52,11 +52,6 @@ class ExchangeRateTableViewCell: UITableViewCell {
         contentView.addSubview(labelVStackView)
         contentView.addSubview(rateLabel)
         
-        contentView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-            $0.height.equalTo(60)
-        }
-        
         labelVStackView.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(16)
             $0.centerY.equalToSuperview()
