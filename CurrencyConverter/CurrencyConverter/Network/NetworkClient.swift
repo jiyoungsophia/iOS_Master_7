@@ -20,10 +20,11 @@ final class NetworkClient {
         // 1. URLRequest 생성 및 설정
         let request = createRequest("GET", url: url)
         
-        // 2. URLSession으로 네트워크 요청 실행 (dataTask 사용)
+        // 2. URLSession으로 네트워크 요청 실행 
         let session = URLSession(configuration: .default)
         
-        session.dataTask(with: request) { data, response, error in
+        session.dataTask(with: request) { [weak self] data, response, error in
+            guard let self = self else { return }
             
             // 3. 네트워크 에러 체크
             if let error = error {
@@ -62,7 +63,7 @@ final class NetworkClient {
                 completion(.failure(.decodingError))
             }
             
-        }.resume() // 중요: 네트워크 요청 시작
+        }.resume()
     }
 }
 

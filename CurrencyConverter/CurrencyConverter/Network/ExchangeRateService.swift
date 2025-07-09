@@ -7,7 +7,7 @@
 
 import Foundation
 
-class ExchangeRateService {
+final class ExchangeRateService {
     private let networkClient = NetworkClient.shared
     private let baseURL = "https://api.exchangerate-api.com/v4/latest"
     

@@ -7,26 +7,21 @@
 
 import Foundation
 
-
-
-@MainActor
 class ExchangeRateViewModel {
     private let exchangeRateService = ExchangeRateService()
     
+    private var allExchangeRates: [ExchangeRate] = []
+    
     private(set) var exchangeRates: [ExchangeRate] = [] {
         didSet {
-            DispatchQueue.main.async { [weak self] in
-                self?.onExchangeRateChanged?()
-            }
+            self.onExchangeRateChanged?()
         }
     }
     
     private(set) var errorMessage: String? {
         didSet {
             if let errorMessage = errorMessage {
-                DispatchQueue.main.async { [weak self] in
-                    self?.onErrorOccurred?(errorMessage)
-                }
+                self.onErrorOccurred?(errorMessage)
             }
         }
     }
@@ -40,11 +35,23 @@ class ExchangeRateViewModel {
         exchangeRateService.fetchExchangeRate { [weak self] result in
             switch result {
             case .success(let rates):
+                self?.allExchangeRates = rates
                 self?.exchangeRates = rates
                 
             case .failure(let error):
                 self?.errorMessage = error.localizedDescription
+                self?.allExchangeRates = []
                 self?.exchangeRates = []
+            }
+        }
+    }
+    
+    func filterExchangeRates(with searchText: String) {
+        if searchText.isEmpty {
+            exchangeRates = allExchangeRates
+        } else {
+            exchangeRates = allExchangeRates.filter { rate in
+                rate.currency.localizedCaseInsensitiveContains(searchText) || rate.country.localizedCaseInsensitiveContains(searchText)
             }
         }
     }

@@ -16,6 +16,7 @@ class ExchangeRateViewController: UIViewController {
     private let searchBar = UISearchBar().then {
         $0.backgroundColor = .background
         $0.placeholder = "통화 검색"
+        $0.searchBarStyle = .minimal
     }
     
     private let tableView = UITableView().then {
@@ -27,7 +28,7 @@ class ExchangeRateViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        setupTableView()
+        setupDelegate()
         setupBinding()
         
         viewModel.loadExchangeRates()
@@ -50,19 +51,54 @@ class ExchangeRateViewController: UIViewController {
         }
     }
     
-    private func setupTableView() {
+    private func setupDelegate() {
         tableView.dataSource = self
         tableView.delegate = self
+        searchBar.delegate = self
     }
     
     private func setupBinding() {
         viewModel.onExchangeRateChanged = { [weak self] in
-            self?.tableView.reloadData()
+            DispatchQueue.main.async {
+                self?.updateTableView()
+            }
         }
         
         viewModel.onErrorOccurred = { [weak self] errorMessage in
-            self?.showErrorAlert(errorMessage)
+            DispatchQueue.main.async {
+                self?.showErrorAlert(errorMessage)
+            }
         }
+    }
+    
+    private func updateTableView() {
+        tableView.reloadData()
+        
+        let isEmpty = viewModel.exchangeRates.isEmpty
+        let isSearching = !(searchBar.text?.isEmpty ?? true)
+        
+        if isEmpty && isSearching {
+            showEmptyState()
+        } else {
+            hideEmptyState()
+        }
+    }
+    
+    private func showEmptyState() {
+        let emptyLabel = UILabel().then {
+            $0.text = "검색 결과 없음"
+            $0.textColor = .secondaryLabel
+            $0.textAlignment = .center
+            $0.font = .systemFont(ofSize: 18, weight: .medium)
+        }
+        
+        tableView.backgroundView = emptyLabel
+        tableView.separatorStyle = .none
+    }
+    
+    private func hideEmptyState() {
+        tableView.backgroundView = nil
+        tableView.separatorStyle = .singleLine
     }
     
     private func showErrorAlert(_ message: String) {
@@ -89,6 +125,11 @@ extension ExchangeRateViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
+        // 간헐적으로 나타나는 크래시 예방
+        guard indexPath.row < viewModel.exchangeRates.count else {
+            return cell
+        }
+        
         let exchangeRate = viewModel.exchangeRates[indexPath.row]
         cell.configure(exchangeRate)
         return cell
@@ -97,4 +138,28 @@ extension ExchangeRateViewController: UITableViewDataSource {
 
 extension ExchangeRateViewController: UITableViewDelegate {
     
+}
+
+extension ExchangeRateViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        viewModel.filterExchangeRates(with: searchText)
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+    }
+    
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchBar.showsCancelButton = true
+    }
+    
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        searchBar.showsCancelButton = false
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = ""
+        searchBar.resignFirstResponder()
+        viewModel.filterExchangeRates(with: "")
+    }
 }
