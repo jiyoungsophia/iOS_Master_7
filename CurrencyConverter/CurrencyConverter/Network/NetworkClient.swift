@@ -13,43 +13,60 @@ final class NetworkClient {
     
     private let successRange = 200..<300
     
-    func fetchData<T: Decodable>(url: URL) async -> Result<T, NetworkError> {
-        do {
-            // 1. URLRequest 생성 및 설정
-            let request = createRequest("GET", url: url)
+    func fetchData<T: Decodable>(
+        url: URL,
+        completion: @escaping (Result<T, NetworkError>) -> Void
+    ) {
+        // 1. URLRequest 생성 및 설정
+        let request = createRequest("GET", url: url)
+        
+        // 2. URLSession으로 네트워크 요청 실행 
+        let session = URLSession(configuration: .default)
+        
+        session.dataTask(with: request) { [weak self] data, response, error in
+            guard let self = self else { return }
             
-            // 2. URLSession으로 네트워크 요청 실행
-            let (data, response) = try await URLSession.shared.data(for: request)
-            
-            // 3. HTTPURLResponse로 변환 확인
-            guard let statusCode = getStatusCode(from: response) else {
-                return .failure(.httpResponseError)
+            // 3. 네트워크 에러 체크
+            if let error = error {
+                if let urlError = error as? URLError {
+                    completion(.failure(.urlError(urlError)))
+                } else {
+                    completion(.failure(.error(error)))
+                }
+                return
             }
             
-            // 4. 상태 코드 검증
-            guard successRange.contains(statusCode) else {
+            // 4. 데이터 확인
+            guard let data = data else {
+                completion(.failure(.httpResponseError))
+                return
+            }
+            
+            // 5. HTTPURLResponse로 변환 확인
+            guard let statusCode = self.getStatusCode(from: response) else { 
+                completion(.failure(.httpResponseError))
+                return
+            }
+            
+            // 6. 상태 코드 검증
+            guard self.successRange.contains(statusCode) else {
                 let error = NetworkError.serverError(statusCode: statusCode)
-                return .failure(error)
+                completion(.failure(error))
+                return
             }
             
-            // 5. JSON 디코딩
+            // 7. JSON 디코딩
             do {
                 let decodedData = try JSONDecoder().decode(T.self, from: data)
-                return .success(decodedData)
+                completion(.success(decodedData))
             } catch {
-                return .failure(.decodingError)
+                completion(.failure(.decodingError))
             }
             
-        } catch {
-            // 6. URLError 처리
-            if let urlError = error as? URLError {
-                return .failure(.urlError(urlError))
-            } else {
-                return .failure(.error(error))
-            }
-        }
+        }.resume()
     }
 }
+
 
 extension NetworkClient {
     /// URLRequest 생성
@@ -63,7 +80,7 @@ extension NetworkClient {
     }
     
     /// HTTPURLResponse에서 상태 코드 추출
-    func getStatusCode(from response: URLResponse) -> Int? {
+    func getStatusCode(from response: URLResponse?) -> Int? {
         return (response as? HTTPURLResponse)?.statusCode
     }
 }
