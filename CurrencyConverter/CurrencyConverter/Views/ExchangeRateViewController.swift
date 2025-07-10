@@ -11,6 +11,7 @@ import Then
 
 class ExchangeRateViewController: UIViewController {
     
+    weak var coordinator: MainCoordinator?
     private let viewModel = ExchangeRateViewModel()
     
     private let searchBar = UISearchBar().then {
@@ -35,7 +36,9 @@ class ExchangeRateViewController: UIViewController {
     }
     
     private func setupUI() {
-        view.backgroundColor = .systemBackground
+        title = "환율 정보"
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.largeTitleDisplayMode = .always
         
         [searchBar, tableView]
             .forEach { view.addSubview($0) }
@@ -137,7 +140,12 @@ extension ExchangeRateViewController: UITableViewDataSource {
 }
 
 extension ExchangeRateViewController: UITableViewDelegate {
-    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        let selectedExchangeRate = viewModel.filteredExchangeRates[indexPath.row]
+        coordinator?.pushToCalculator(with: selectedExchangeRate)
+    }
 }
 
 extension ExchangeRateViewController: UISearchBarDelegate {
@@ -163,3 +171,4 @@ extension ExchangeRateViewController: UISearchBarDelegate {
         viewModel.filterExchangeRates(with: "")
     }
 }
+
