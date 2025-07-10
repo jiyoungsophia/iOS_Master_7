@@ -137,8 +137,10 @@ class CalculatorViewController: UIViewController {
         
         resultLabel.text = state.calculatedResult
         
-        if let errorMessage = state.errorMessage {
-            coordinator?.showAlert(message: errorMessage.localizedDescription)
+        if let errorMessage = state.errorMessage?.localizedDescription {
+            coordinator?.showAlert(message: errorMessage) { [weak self] in
+                self?.amountTextField.text = ""
+            }
         }
     }
     

@@ -57,25 +57,26 @@ final class CalculatorViewModel: ViewModelProtocol {
         state.errorMessage = nil
         
         guard let inputText = inputText, !inputText.isEmpty else {
-            state.errorMessage = .emptyInput
-            state.calculatedResult = Constants.initialResult
+            handleError(.emptyInput)
             return
         }
         
         guard let input = Double(inputText) else {
-            state.errorMessage = .invalidInput
-            state.calculatedResult = Constants.initialResult
+            handleError(.invalidInput)
             return
         }
         
         let result = input * state.exchangeRate.rate
-        
         state.calculatedResult = formatResult(input: input, output: result)
-        
     }
     
     private func formatResult(input: Double, output: Double) -> String {
         // "₩1,000 → 0.74 USD" 형태로 표시
         return "₩ \(krw: input) → \(currency: output) \(state.exchangeRate.currency)"
+    }
+    
+    private func handleError(_ error: CalculatorError) {
+        state.errorMessage = error
+        state.calculatedResult = Constants.initialResult
     }
 }

@@ -35,13 +35,19 @@ final class MainCoordinator: Coordinator {
         navigationController.pushViewController(calculatorVC, animated: true)
     }
     
-    func showAlert(title: String = "오류", message: String?) {
-            let alert = UIAlertController(
-                title: title,
-                message: message,
-                preferredStyle: .alert
-            )
-            alert.addAction(UIAlertAction(title: "확인", style: .default))
-            navigationController.present(alert, animated: true)
-        }
+    func showAlert(
+        title: String = "오류",
+        message: String?,
+        completion: (() -> Void)? = nil
+    ) {
+        let alert = UIAlertController(
+            title: title,
+            message: message,
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "확인", style: .default) { _ in 
+            completion?()
+        })
+        navigationController.present(alert, animated: true)
+    }
 }
