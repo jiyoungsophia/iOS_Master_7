@@ -24,8 +24,8 @@ struct ExchangeRateState {
     }
 }
 
-
 class ExchangeRateViewModel{
+    
     private let exchangeRateService: ExchangeRateService
     
     typealias Action = ExchangeRateAction
@@ -49,7 +49,6 @@ class ExchangeRateViewModel{
             self?.handleAction(action)
         }
     }
-    
     
     private func handleAction(_ action: ExchangeRateAction) {
         switch action {

@@ -14,7 +14,7 @@ struct ExchangeRateResponse: Codable {
         return rates.map { (currency, rate) in
             ExchangeRate(
                 currency: currency,
-                country: currency.toCountryName,
+                country: CurrencyMapping.getCountryName(from: currency),
                 rate: rate
             )
         }.sorted { $0.currency < $1.currency }

@@ -68,6 +68,6 @@ class ExchangeRateTableViewCell: UITableViewCell {
     func configure(_ exchangeRate: ExchangeRate) {
         currencyLabel.text = exchangeRate.currency
         rateLabel.text = "\(rate: exchangeRate.rate)"
-        countryLabel.text = exchangeRate.currency.toCountryName
+        countryLabel.text = exchangeRate.country
     }
 }
