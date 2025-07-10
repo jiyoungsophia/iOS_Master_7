@@ -31,6 +31,23 @@ final class MainCoordinator: Coordinator {
     
     func pushToCalculator(with exchangeRate: ExchangeRate) {
         let calculatorVC = CalculatorViewController(exchangeRate: exchangeRate)
+        calculatorVC.coordinator = self
         navigationController.pushViewController(calculatorVC, animated: true)
+    }
+    
+    func showAlert(
+        title: String = "오류",
+        message: String?,
+        completion: (() -> Void)? = nil
+    ) {
+        let alert = UIAlertController(
+            title: title,
+            message: message,
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "확인", style: .default) { _ in 
+            completion?()
+        })
+        navigationController.present(alert, animated: true)
     }
 }
