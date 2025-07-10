@@ -7,50 +7,81 @@
 
 import Foundation
 
-class ExchangeRateViewModel {
-    private let exchangeRateService = ExchangeRateService()
+enum ExchangeRateAction {
+    case loadExchangeRates
+    case filterExchangeRates(String)
+}
+
+struct ExchangeRateState {
+    var allExchangeRates: [ExchangeRate]
+    var filteredExchangeRates: [ExchangeRate]
+    var errorMessage: String?
     
-    private var allExchangeRates: [ExchangeRate] = []
+    init() {
+        self.allExchangeRates = []
+        self.filteredExchangeRates = []
+        self.errorMessage = nil
+    }
+}
+
+
+class ExchangeRateViewModel{
+    private let exchangeRateService: ExchangeRateService
     
-    private(set) var filteredExchangeRates: [ExchangeRate] = [] {
+    typealias Action = ExchangeRateAction
+    typealias State = ExchangeRateState
+    
+    var action: ((ExchangeRateAction) -> Void)?
+    
+    private(set) var state: ExchangeRateState {
         didSet {
-            self.onExchangeRateChanged?()
+            self.onStateChanged?()
         }
     }
     
-    private(set) var errorMessage: String? {
-        didSet {
-            if let errorMessage = errorMessage {
-                self.onErrorOccurred?(errorMessage)
-            }
+    var onStateChanged: (() -> Void)?
+    
+    init(exchangeRateService: ExchangeRateService = ExchangeRateService()) {
+        self.exchangeRateService = exchangeRateService
+        self.state = ExchangeRateState()
+        
+        self.action = { [weak self] action in
+            self?.handleAction(action)
         }
     }
     
-    var onExchangeRateChanged: (() -> Void)?
-    var onErrorOccurred: ((String) -> Void)?
+    
+    private func handleAction(_ action: ExchangeRateAction) {
+        switch action {
+        case .loadExchangeRates:
+            self.loadExchangeRates()
+        case .filterExchangeRates(let searchText):
+            self.filterExchangeRates(with: searchText)
+        }
+    }
     
     func loadExchangeRates() {
-        errorMessage = nil
+        state.errorMessage = nil
         
         exchangeRateService.fetchExchangeRate { [weak self] result in
             switch result {
             case .success(let rates):
-                self?.allExchangeRates = rates
-                self?.filteredExchangeRates = rates
+                self?.state.allExchangeRates = rates
+                self?.state.filteredExchangeRates = rates
                 
             case .failure(let error):
-                self?.errorMessage = error.localizedDescription
-                self?.allExchangeRates = []
-                self?.filteredExchangeRates = []
+                self?.state.errorMessage = error.localizedDescription
+                self?.state.allExchangeRates = []
+                self?.state.filteredExchangeRates = []
             }
         }
     }
     
     func filterExchangeRates(with searchText: String) {
         if searchText.isEmpty {
-            filteredExchangeRates = allExchangeRates
+            state.filteredExchangeRates = state.allExchangeRates
         } else {
-            filteredExchangeRates = allExchangeRates.filter { rate in
+            state.filteredExchangeRates = state.allExchangeRates.filter { rate in
                 rate.currency.localizedCaseInsensitiveContains(searchText) || rate.country.localizedCaseInsensitiveContains(searchText)
             }
         }

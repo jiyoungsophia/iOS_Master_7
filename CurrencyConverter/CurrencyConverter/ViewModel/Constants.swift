@@ -8,7 +8,9 @@
 import Foundation
 
 struct Constants {
-    
+    static let searchBarPlaceholder: String = "통화 검색"
+    static let exchangeRateTitle: String = "환율 정보"
+    static let noSearchResult: String = "검색 결과 없음"
     
     static let calculatorTitle: String = "환율 계산기"
     static let amountPlaceholder: String = "금액을 입력하세요"
