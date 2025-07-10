@@ -10,7 +10,9 @@ import Foundation
 final class CalculatorViewModel {
     let exchangeRate: ExchangeRate
     
-    private(set) var calculatedResult: String = "계산 결과가 여기에 표시됩니다" {
+    private let initialCalculatedResult = "계산 결과가 여기에 표시됩니다"
+    
+    private(set) var calculatedResult: String {
         didSet {
             self.onCalculatedResultChanged?()
         }
@@ -29,6 +31,7 @@ final class CalculatorViewModel {
     
     init(exchangeRate: ExchangeRate) {
         self.exchangeRate = exchangeRate
+        self.calculatedResult  = initialCalculatedResult
     }
     
     func calculate(with inputText: String?) {
@@ -36,13 +39,13 @@ final class CalculatorViewModel {
         
         guard let inputText = inputText, !inputText.isEmpty else {
             errorMessage = "금액을 입력해주세요"
-            calculatedResult = "계산 결과가 여기에 표시됩니다"
+            calculatedResult = initialCalculatedResult
             return
         }
         
         guard let input = Double(inputText) else {
             errorMessage = "올바른 숫자를 입력해주세요"
-            calculatedResult = "계산 결과가 여기에 표시됩니다"
+            calculatedResult = initialCalculatedResult
             return
         }
         
