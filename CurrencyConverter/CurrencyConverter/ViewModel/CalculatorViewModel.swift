@@ -18,10 +18,10 @@ final class CalculatorViewModel {
         }
     }
     
-    private(set) var errorMessage: String? = nil {
+    private(set) var errorMessage: CalculatorError? = nil {
         didSet {
             if let errorMessage = errorMessage {
-                self.onErrorOccurred?(errorMessage)
+                self.onErrorOccurred?(errorMessage.localizedDescription)
             }
         }
     }
@@ -38,13 +38,13 @@ final class CalculatorViewModel {
         errorMessage = nil
         
         guard let inputText = inputText, !inputText.isEmpty else {
-            errorMessage = "금액을 입력해주세요"
+            errorMessage = .emptyInput
             calculatedResult = initialCalculatedResult
             return
         }
         
         guard let input = Double(inputText) else {
-            errorMessage = "올바른 숫자를 입력해주세요"
+            errorMessage = .invalidInput
             calculatedResult = initialCalculatedResult
             return
         }

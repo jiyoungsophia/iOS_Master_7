@@ -13,6 +13,7 @@ class CalculatorViewController: UIViewController {
     
     // MARK: - Properties
     
+    weak var coordinator: MainCoordinator?
     private let viewModel: CalculatorViewModel
     
     // MARK: - UI Components
@@ -138,7 +139,7 @@ class CalculatorViewController: UIViewController {
         
         viewModel.onErrorOccurred = { [weak self] errorMessage in
             DispatchQueue.main.async {
-                self?.showErrorAlert(errorMessage)
+                self?.coordinator?.showAlert(message: errorMessage)
             }
         }
     }
@@ -156,17 +157,5 @@ class CalculatorViewController: UIViewController {
     @objc
     private func convertButtonTapped() {
         viewModel.calculate(with: amountTextField.text)
-    }
-    
-    // MARK: - Private Methods
-    
-    private func showErrorAlert(_ message: String) {
-        let alert = UIAlertController(
-            title: "입력 오류",
-            message: message,
-            preferredStyle: .alert
-        )
-        alert.addAction(UIAlertAction(title: "확인", style: .default))
-        present(alert, animated: true)
     }
 }

@@ -83,7 +83,7 @@ class ExchangeRateViewController: UIViewController {
         
         viewModel.onErrorOccurred = { [weak self] errorMessage in
             DispatchQueue.main.async {
-                self?.showErrorAlert(errorMessage)
+                self?.coordinator?.showAlert(message: errorMessage)
             }
         }
     }
@@ -119,16 +119,6 @@ class ExchangeRateViewController: UIViewController {
     private func hideEmptyState() {
         tableView.backgroundView = nil
         tableView.separatorStyle = .singleLine
-    }
-    
-    private func showErrorAlert(_ message: String) {
-        let alert = UIAlertController(
-            title: "오류",
-            message: message,
-            preferredStyle: .alert
-        )
-        alert.addAction(UIAlertAction(title: "확인", style: .default))
-        present(alert, animated: true)
     }
 }
 
