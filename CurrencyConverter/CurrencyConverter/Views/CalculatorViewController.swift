@@ -11,7 +11,11 @@ import Then
 
 class CalculatorViewController: UIViewController {
     
-    private let exchangeRate: ExchangeRate
+    // MARK: - Properties
+    
+    private let viewModel: CalculatorViewModel
+    
+    // MARK: - UI Components
     
     private let currencyLabel = UILabel().then {
         $0.font = .systemFont(ofSize: 24, weight: .bold)
@@ -55,8 +59,10 @@ class CalculatorViewController: UIViewController {
         $0.text = "계산 결과가 여기에 표시됩니다"
     }
     
+    // MARK: - Initializer
+    
     init(exchangeRate: ExchangeRate) {
-        self.exchangeRate = exchangeRate
+        self.viewModel = CalculatorViewModel(exchangeRate: exchangeRate)
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -64,12 +70,17 @@ class CalculatorViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        setupAction()
         configure()
+        setupBinding()
     }
+    
+    // MARK: - Setup Methods
     
     private func setupUI() {
         view.backgroundColor = .background
@@ -108,14 +119,54 @@ class CalculatorViewController: UIViewController {
         }
     }
     
+    // MARK: - Configuration
+    
     private func configure() {
-        currencyLabel.text = exchangeRate.currency
-        countryLabel.text = exchangeRate.country
+        currencyLabel.text = viewModel.exchangeRate.currency
+        countryLabel.text = viewModel.exchangeRate.country
     }
     
-}
-
-@available(iOS 17.0, *)
-#Preview {
-    CalculatorViewController(exchangeRate: ExchangeRate(currency: "USD", country: "미국", rate: 0.14))
+    
+    // MARK: - Binding
+    
+    private func setupBinding() {
+        viewModel.onCalculatedResultChanged = { [weak self] in
+            DispatchQueue.main.async {
+                self?.resultLabel.text = self?.viewModel.calculatedResult
+            }
+        }
+        
+        viewModel.onErrorOccurred = { [weak self] errorMessage in
+            DispatchQueue.main.async {
+                self?.showErrorAlert(errorMessage)
+            }
+        }
+    }
+    
+    // MARK: - Actions
+    
+    private func setupAction() {
+        convertButton.addTarget(
+            self,
+            action: #selector(convertButtonTapped),
+            for: .touchUpInside
+        )
+    }
+    
+    @objc
+    private func convertButtonTapped() {
+        viewModel.calculate(with: amountTextField.text)
+    }
+    
+    // MARK: - Private Methods
+    
+    private func showErrorAlert(_ message: String) {
+        let alert = UIAlertController(
+            title: "입력 오류",
+            message: message,
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "확인", style: .default))
+        present(alert, animated: true)
+    }
 }

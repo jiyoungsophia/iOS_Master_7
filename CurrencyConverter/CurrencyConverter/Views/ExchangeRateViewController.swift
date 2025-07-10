@@ -11,8 +11,12 @@ import Then
 
 class ExchangeRateViewController: UIViewController {
     
+    // MARK: - Properties
+    
     weak var coordinator: MainCoordinator?
     private let viewModel = ExchangeRateViewModel()
+    
+    // MARK: - UI Components
     
     private let searchBar = UISearchBar().then {
         $0.backgroundColor = .background
@@ -26,6 +30,8 @@ class ExchangeRateViewController: UIViewController {
         $0.register(ExchangeRateTableViewCell.self, forCellReuseIdentifier: ExchangeRateTableViewCell.identifier)
     }
     
+    // MARK: - Life Cycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
@@ -35,6 +41,8 @@ class ExchangeRateViewController: UIViewController {
         viewModel.loadExchangeRates()
     }
     
+    // MARK: - Setup Methods
+    
     private func setupUI() {
         title = "환율 정보"
         navigationController?.navigationBar.prefersLargeTitles = true
@@ -43,6 +51,10 @@ class ExchangeRateViewController: UIViewController {
         [searchBar, tableView]
             .forEach { view.addSubview($0) }
         
+        setupConstraints()
+    }
+    
+    private func setupConstraints() {
         searchBar.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide)
             $0.horizontalEdges.equalToSuperview()
@@ -60,6 +72,8 @@ class ExchangeRateViewController: UIViewController {
         searchBar.delegate = self
     }
     
+    // MARK: - Binding
+    
     private func setupBinding() {
         viewModel.onExchangeRateChanged = { [weak self] in
             DispatchQueue.main.async {
@@ -73,6 +87,9 @@ class ExchangeRateViewController: UIViewController {
             }
         }
     }
+    
+    
+    // MARK: - Private Methods
     
     private func updateTableView() {
         tableView.reloadData()
@@ -115,6 +132,8 @@ class ExchangeRateViewController: UIViewController {
     }
 }
 
+// MARK: - UITableViewDataSource
+
 extension ExchangeRateViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewModel.filteredExchangeRates.count
@@ -139,6 +158,8 @@ extension ExchangeRateViewController: UITableViewDataSource {
     }
 }
 
+// MARK: - UITableViewDelegate
+
 extension ExchangeRateViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
@@ -147,6 +168,8 @@ extension ExchangeRateViewController: UITableViewDelegate {
         coordinator?.pushToCalculator(with: selectedExchangeRate)
     }
 }
+
+// MARK: - UISearchBarDelegate
 
 extension ExchangeRateViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
@@ -171,4 +194,3 @@ extension ExchangeRateViewController: UISearchBarDelegate {
         viewModel.filterExchangeRates(with: "")
     }
 }
-
