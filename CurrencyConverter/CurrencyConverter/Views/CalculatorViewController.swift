@@ -41,12 +41,12 @@ class CalculatorViewController: UIViewController {
         $0.borderStyle = .roundedRect
         $0.keyboardType = .decimalPad
         $0.textAlignment = .center
-        $0.placeholder = "금액을 입력하세요"
+        $0.placeholder = Constants.amountPlaceholder
     }
     
     private let convertButton = UIButton().then {
         $0.backgroundColor = .button
-        $0.setTitle("환율 계산", for: .normal)
+        $0.setTitle(Constants.convertButtonTitle, for: .normal)
         $0.setTitleColor(.white, for: .normal)
         $0.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         $0.layer.cornerRadius = 8
@@ -57,7 +57,7 @@ class CalculatorViewController: UIViewController {
         $0.textAlignment = .center
         $0.numberOfLines = 0
         $0.textColor = .text
-        $0.text = "계산 결과가 여기에 표시됩니다"
+        $0.text = Constants.resultLabelText
     }
     
     // MARK: - Initializer
@@ -77,15 +77,15 @@ class CalculatorViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         setupAction()
-        configure()
         setupBinding()
+        render(state: viewModel.state)
     }
     
     // MARK: - Setup Methods
     
     private func setupUI() {
         view.backgroundColor = .background
-        title = "환율 계산기"
+        title = Constants.calculatorTitle
         
         VStackView.addArrangedSubview(currencyLabel)
         VStackView.addArrangedSubview(countryLabel)
@@ -120,27 +120,25 @@ class CalculatorViewController: UIViewController {
         }
     }
     
-    // MARK: - Configuration
-    
-    private func configure() {
-        currencyLabel.text = viewModel.exchangeRate.currency
-        countryLabel.text = viewModel.exchangeRate.country
-    }
-    
-    
     // MARK: - Binding
     
     private func setupBinding() {
-        viewModel.onCalculatedResultChanged = { [weak self] in
+        viewModel.onStateChanged = { [weak self] in
             DispatchQueue.main.async {
-                self?.resultLabel.text = self?.viewModel.calculatedResult
+                guard let self = self else { return }
+                self.render(state: self.viewModel.state)
             }
         }
+    }
+    
+    private func render(state: CalculatorState) {
+        currencyLabel.text = state.exchangeRate.currency
+        countryLabel.text = state.exchangeRate.country
         
-        viewModel.onErrorOccurred = { [weak self] errorMessage in
-            DispatchQueue.main.async {
-                self?.coordinator?.showAlert(message: errorMessage)
-            }
+        resultLabel.text = state.calculatedResult
+        
+        if let errorMessage = state.errorMessage {
+            coordinator?.showAlert(message: errorMessage.localizedDescription)
         }
     }
     
@@ -156,6 +154,6 @@ class CalculatorViewController: UIViewController {
     
     @objc
     private func convertButtonTapped() {
-        viewModel.calculate(with: amountTextField.text)
+        viewModel.action?(.calculate(amountTextField.text))
     }
 }

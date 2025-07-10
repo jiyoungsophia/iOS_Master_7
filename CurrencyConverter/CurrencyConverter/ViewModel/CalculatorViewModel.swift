@@ -7,56 +7,75 @@
 
 import Foundation
 
-final class CalculatorViewModel {
+enum CalculatorAction {
+    case calculate(String?)
+}
+
+struct CalculatorState {
     let exchangeRate: ExchangeRate
-    
-    private let initialCalculatedResult = "계산 결과가 여기에 표시됩니다"
-    
-    private(set) var calculatedResult: String {
-        didSet {
-            self.onCalculatedResultChanged?()
-        }
-    }
-    
-    private(set) var errorMessage: CalculatorError? = nil {
-        didSet {
-            if let errorMessage = errorMessage {
-                self.onErrorOccurred?(errorMessage.localizedDescription)
-            }
-        }
-    }
-    
-    var onCalculatedResultChanged: (() -> Void)?
-    var onErrorOccurred: ((String) -> Void)?
+    var calculatedResult: String
+    var errorMessage: CalculatorError?
     
     init(exchangeRate: ExchangeRate) {
         self.exchangeRate = exchangeRate
-        self.calculatedResult  = initialCalculatedResult
+        self.calculatedResult = Constants.initialResult
+        self.errorMessage = nil
+    }
+}
+
+final class CalculatorViewModel: ViewModelProtocol {
+ 
+    typealias Action = CalculatorAction
+    typealias State = CalculatorState
+    
+    var action: ((CalculatorAction) -> Void)?
+    
+    private(set) var state: CalculatorState {
+        didSet {
+            self.onStateChanged?()
+        }
+    }
+
+    var onStateChanged: (() -> Void)?
+    
+    init(exchangeRate: ExchangeRate) {
+        self.state = CalculatorState(exchangeRate: exchangeRate)
+        self.action = { [weak self] action in
+            self?.handleAction(action)
+            
+        }
     }
     
-    func calculate(with inputText: String?) {
-        errorMessage = nil
+    private func handleAction(_ action: CalculatorAction) {
+        switch action {
+        case .calculate(let inputText):
+            calculate(with: inputText)
+        }
+    }
+    
+    private func calculate(with inputText: String?) {
+        state.errorMessage = nil
         
         guard let inputText = inputText, !inputText.isEmpty else {
-            errorMessage = .emptyInput
-            calculatedResult = initialCalculatedResult
+            state.errorMessage = .emptyInput
+            state.calculatedResult = Constants.initialResult
             return
         }
         
         guard let input = Double(inputText) else {
-            errorMessage = .invalidInput
-            calculatedResult = initialCalculatedResult
+            state.errorMessage = .invalidInput
+            state.calculatedResult = Constants.initialResult
             return
         }
         
-        let result = input * exchangeRate.rate
+        let result = input * state.exchangeRate.rate
         
-        calculatedResult = formatResult(input: input, output: result)
+        state.calculatedResult = formatResult(input: input, output: result)
         
     }
     
     private func formatResult(input: Double, output: Double) -> String {
         // "₩1,000 → 0.74 USD" 형태로 표시
-        return "₩ \(krw: input) → \(currency: output) \(exchangeRate.currency)"
+        return "₩ \(krw: input) → \(currency: output) \(state.exchangeRate.currency)"
     }
 }
