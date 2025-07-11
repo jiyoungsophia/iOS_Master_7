@@ -17,12 +17,14 @@ struct ExchangeRateState {
     var allExchangeRates: [ExchangeRate]
     var filteredExchangeRates: [ExchangeRate]
     var favoriteCurrencies: Set<String>
+    var currentSearchText: String
     var errorMessage: String?
     
     init() {
         self.allExchangeRates = []
         self.filteredExchangeRates = []
         self.favoriteCurrencies = []
+        self.currentSearchText = ""
         self.errorMessage = nil
     }
 }
@@ -71,7 +73,7 @@ class ExchangeRateViewModel: ViewModelProtocol {
             switch result {
             case .success(let rates):
                 self?.state.allExchangeRates = rates
-                self?.state.filteredExchangeRates = rates
+                self?.state.filteredExchangeRates = self?.sortExchangeRates(rates) ?? []
                 
             case .failure(let error):
                 self?.state.errorMessage = error.localizedDescription
@@ -82,21 +84,40 @@ class ExchangeRateViewModel: ViewModelProtocol {
     }
     
     func filterExchangeRates(with searchText: String) {
+        state.currentSearchText = searchText
+        let baseRates: [ExchangeRate]
+        
         if searchText.isEmpty {
-            state.filteredExchangeRates = state.allExchangeRates
+            baseRates = state.allExchangeRates
         } else {
-            state.filteredExchangeRates = state.allExchangeRates.filter { rate in
+            baseRates = state.allExchangeRates.filter { rate in
                 rate.currency.localizedCaseInsensitiveContains(searchText) || rate.country.localizedCaseInsensitiveContains(searchText)
             }
+        }
+        state.filteredExchangeRates = sortExchangeRates(baseRates)
+    }
+    
+
+    
+    private func sortExchangeRates(_ rates: [ExchangeRate]) -> [ExchangeRate] {
+        return rates.sorted {
+            if isFavorite($0.currency) != isFavorite($1.currency) {
+                return isFavorite($0.currency)
+            }
+            return $0.currency < $1.currency
         }
     }
     
     func toggleFavorite(_ currency: String) {
-        if state.favoriteCurrencies.contains(currency) {
+        if isFavorite(currency) {
             state.favoriteCurrencies.remove(currency)
         } else {
             state.favoriteCurrencies.insert(currency)
         }
-        print("현재 즐겨찾기 목록: \(state.favoriteCurrencies)")
+        filterExchangeRates(with: state.currentSearchText)
+    }
+    
+    func isFavorite(_ currency: String) -> Bool {
+        return state.favoriteCurrencies.contains(currency)
     }
 }
