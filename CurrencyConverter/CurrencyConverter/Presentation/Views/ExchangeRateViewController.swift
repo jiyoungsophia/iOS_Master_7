@@ -146,7 +146,16 @@ extension ExchangeRateViewController: UITableViewDataSource {
         }
         
         let exchangeRate = viewModel.state.filteredExchangeRates[indexPath.row]
-        cell.configure(exchangeRate)
+        
+        let isFavorite = viewModel.isFavorite(exchangeRate.currency)
+              
+        cell.configure(exchangeRate, isFavorite: isFavorite)
+        
+        cell.onFavoriteButtonTapped = { [weak self] currency in
+            self?.viewModel.action?(.toggleFavorite(currency))
+            
+        }
+        
         return cell
     }
 }
@@ -166,7 +175,7 @@ extension ExchangeRateViewController: UITableViewDelegate {
 
 extension ExchangeRateViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        viewModel.filterExchangeRates(with: searchText)
+        viewModel.action?(.filterExchangeRates(searchText))
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {

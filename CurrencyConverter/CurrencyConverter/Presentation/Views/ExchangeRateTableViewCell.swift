@@ -10,7 +10,7 @@ import SnapKit
 import Then
 
 class ExchangeRateTableViewCell: UITableViewCell {
-
+    
     static let identifier = "ExchangeRateTableViewCell"
     
     private let currencyLabel = UILabel().then {
@@ -33,10 +33,19 @@ class ExchangeRateTableViewCell: UITableViewCell {
         $0.textAlignment = .right
     }
     
+    private let favoriteButton = UIButton().then {
+        $0.setImage(UIImage(systemName: "star"), for: .normal)
+        $0.setImage(UIImage(systemName: "star.fill"), for: .selected)
+        $0.imageView?.tintColor = .favorite
+    }
+    
+    private var exchangeRate: ExchangeRate?
+    var onFavoriteButtonTapped: ((String) -> Void)?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
+        setupAction()
     }
     
     required init?(coder: NSCoder) {
@@ -51,6 +60,7 @@ class ExchangeRateTableViewCell: UITableViewCell {
         
         contentView.addSubview(labelVStackView)
         contentView.addSubview(rateLabel)
+        contentView.addSubview(favoriteButton)
         
         labelVStackView.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(16)
@@ -58,16 +68,40 @@ class ExchangeRateTableViewCell: UITableViewCell {
         }
         
         rateLabel.snp.makeConstraints {
-            $0.trailing.equalToSuperview().inset(16)
+            $0.trailing.equalTo(favoriteButton.snp.leading).offset(-16)
             $0.centerY.equalToSuperview()
             $0.leading.greaterThanOrEqualTo(labelVStackView.snp.trailing).offset(16)
             $0.width.equalTo(120)
         }
+        
+        favoriteButton.snp.makeConstraints {
+            $0.leading.equalTo(rateLabel.snp.trailing).offset(16)
+            $0.trailing.equalToSuperview().inset(16)
+            $0.centerY.equalToSuperview()
+            $0.width.height.equalTo(24)
+        }
+        
     }
     
-    func configure(_ exchangeRate: ExchangeRate) {
+    func configure(_ exchangeRate: ExchangeRate, isFavorite: Bool = false) {
+        self.exchangeRate = exchangeRate
         currencyLabel.text = exchangeRate.currency
         rateLabel.text = "\(rate: exchangeRate.rate)"
         countryLabel.text = exchangeRate.country
+        favoriteButton.isSelected = isFavorite
+    }
+    
+    private func setupAction() {
+        favoriteButton.addTarget(
+            self,
+            action: #selector(favoriteButtonTapped),
+            for: .touchUpInside
+        )
+    }
+    
+    @objc
+    private func favoriteButtonTapped() {
+        guard let currency = exchangeRate?.currency else { return }
+        onFavoriteButtonTapped?(currency)
     }
 }
