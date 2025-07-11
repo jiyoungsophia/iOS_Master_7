@@ -12,7 +12,6 @@ protocol FavoriteCurrencyManagerProtocol: AnyObject {
     func addFavorite(_ currencyCode: String) // Create
     func loadFavoriteCurrencies() -> Set<String> // Read
     func removeFavorite(_ currencyCode: String)
-    func isFavorite(_ currencyCode: String) -> Bool
 }
 
 class FavoriteCurrencyManager: FavoriteCurrencyManagerProtocol {
@@ -52,6 +51,8 @@ class FavoriteCurrencyManager: FavoriteCurrencyManagerProtocol {
     /// Read
     func loadFavoriteCurrencies() -> Set<String> {
         let currencyCodes = FavoriteCurrency.fetchAllCurrencyCodes(context: context)
+        print("📱 CoreData에서 로드된 즐겨찾기: \(currencyCodes)")
+
         return Set(currencyCodes)
     }
     
@@ -69,11 +70,6 @@ class FavoriteCurrencyManager: FavoriteCurrencyManagerProtocol {
             print("❌ 즐겨찾기 제거 실패: \(error)")
         }
     }
-    
-    func isFavorite(_ currencyCode: String) -> Bool {
-        return FavoriteCurrency.exists(currencyCode: currencyCode, context: context)
-    }
-    
     
     private func saveContext() {
         if context.hasChanges {
