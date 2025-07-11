@@ -10,21 +10,24 @@ import Foundation
 enum ExchangeRateAction {
     case loadExchangeRates
     case filterExchangeRates(String)
+    case toggleFavorite(String)
 }
 
 struct ExchangeRateState {
     var allExchangeRates: [ExchangeRate]
     var filteredExchangeRates: [ExchangeRate]
+    var favoriteCurrencies: Set<String>
     var errorMessage: String?
     
     init() {
         self.allExchangeRates = []
         self.filteredExchangeRates = []
+        self.favoriteCurrencies = []
         self.errorMessage = nil
     }
 }
 
-class ExchangeRateViewModel{
+class ExchangeRateViewModel: ViewModelProtocol {
     
     private let exchangeRateService: ExchangeRateService
     
@@ -56,6 +59,8 @@ class ExchangeRateViewModel{
             self.loadExchangeRates()
         case .filterExchangeRates(let searchText):
             self.filterExchangeRates(with: searchText)
+        case .toggleFavorite(let currency):
+            self.toggleFavorite(currency)
         }
     }
     
@@ -84,5 +89,14 @@ class ExchangeRateViewModel{
                 rate.currency.localizedCaseInsensitiveContains(searchText) || rate.country.localizedCaseInsensitiveContains(searchText)
             }
         }
+    }
+    
+    func toggleFavorite(_ currency: String) {
+        if state.favoriteCurrencies.contains(currency) {
+            state.favoriteCurrencies.remove(currency)
+        } else {
+            state.favoriteCurrencies.insert(currency)
+        }
+        print("현재 즐겨찾기 목록: \(state.favoriteCurrencies)")
     }
 }
