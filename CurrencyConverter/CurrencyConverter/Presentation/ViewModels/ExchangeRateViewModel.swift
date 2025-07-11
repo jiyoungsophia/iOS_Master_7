@@ -32,6 +32,7 @@ struct ExchangeRateState {
 class ExchangeRateViewModel: ViewModelProtocol {
     
     private let exchangeRateService: ExchangeRateService
+    private let favoriteCurrencyManager: FavoriteCurrencyManagerProtocol 
     
     typealias Action = ExchangeRateAction
     typealias State = ExchangeRateState
@@ -46,9 +47,15 @@ class ExchangeRateViewModel: ViewModelProtocol {
     
     var onStateChanged: (() -> Void)?
     
-    init(exchangeRateService: ExchangeRateService = ExchangeRateService()) {
+    init(
+        exchangeRateService: ExchangeRateService = ExchangeRateService(),
+        favoriteCurrencyManager: FavoriteCurrencyManagerProtocol = FavoriteCurrencyManager.shared
+    ) {
         self.exchangeRateService = exchangeRateService
+        self.favoriteCurrencyManager = favoriteCurrencyManager
         self.state = ExchangeRateState()
+        
+        loadFavoritesFromCoreData()
         
         self.action = { [weak self] action in
             self?.handleAction(action)
@@ -97,8 +104,6 @@ class ExchangeRateViewModel: ViewModelProtocol {
         state.filteredExchangeRates = sortExchangeRates(baseRates)
     }
     
-
-    
     private func sortExchangeRates(_ rates: [ExchangeRate]) -> [ExchangeRate] {
         return rates.sorted {
             if isFavorite($0.currency) != isFavorite($1.currency) {
@@ -110,11 +115,19 @@ class ExchangeRateViewModel: ViewModelProtocol {
     
     func toggleFavorite(_ currency: String) {
         if isFavorite(currency) {
+            favoriteCurrencyManager.removeFavorite(currency)
             state.favoriteCurrencies.remove(currency)
         } else {
+            favoriteCurrencyManager.addFavorite(currency)
             state.favoriteCurrencies.insert(currency)
         }
+        
         filterExchangeRates(with: state.currentSearchText)
+    }
+    
+    private func loadFavoritesFromCoreData() {
+        let savedFavorites = favoriteCurrencyManager.loadFavoriteCurrencies()
+        state.favoriteCurrencies = savedFavorites
     }
     
     func isFavorite(_ currency: String) -> Bool {
