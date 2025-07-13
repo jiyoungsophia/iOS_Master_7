@@ -18,21 +18,73 @@ final class MainCoordinator: Coordinator {
     var navigationController: UINavigationController
     var childCoordinators: [Coordinator] = []
     
+    private let appStateManager: AppStateManagerProtocol = AppStateManager.shared
+    
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
         self.navigationController.view.backgroundColor = .systemBackground
     }
     
     func start() {
+        if let savedState = appStateManager.loadAppState() {
+            restoreFromSavedState(savedState)
+        } else {
+            showExchangeRate()
+        }
+    }
+    
+    func showExchangeRate() {
         let exchangeRateVC = ExchangeRateViewController()
         exchangeRateVC.coordinator = self
-        navigationController.pushViewController(exchangeRateVC, animated: false)
+        navigationController.setViewControllers([exchangeRateVC], animated: false)
+        
+        appStateManager.saveAppState(screen: .exchangeRateList, currency: nil)
     }
     
     func pushToCalculator(with exchangeRate: ExchangeRate) {
-        let calculatorVC = CalculatorViewController(exchangeRate: exchangeRate)
+        let viewModel = CalculatorViewModel(exchangeRate: exchangeRate)
+        let calculatorVC = CalculatorViewController(viewModel: viewModel)
         calculatorVC.coordinator = self
         navigationController.pushViewController(calculatorVC, animated: true)
+        
+        appStateManager.saveAppState(screen: .calculator, currency: exchangeRate.currency)
+    }
+    
+    private func restoreFromSavedState(_ state: (screen: ScreenType, currency: String?)) {
+        switch state.screen {
+        case .exchangeRateList:
+            showExchangeRate()
+        case .calculator:
+            guard let currency = state.currency else {
+                showExchangeRate()
+                return
+            }
+            restoreCaculatorScreen(currency: currency)
+        }
+    }
+    
+    private func restoreCaculatorScreen(currency: String) {
+        let lastRates = ExchangeRateRecordManager.shared.getLastRates()
+        
+        guard let rate = lastRates[currency] else {
+            showExchangeRate()
+            return
+        }
+        
+        let exchangeRate = ExchangeRate(
+            currency: currency,
+            country: CurrencyMapping.getCountryName(from: currency),
+            rate: rate
+        )
+        
+        let exchangeRateVC = ExchangeRateViewController()
+        exchangeRateVC.coordinator = self
+        
+        let viewModel = CalculatorViewModel(exchangeRate: exchangeRate)
+        let calculatorVC = CalculatorViewController(viewModel: viewModel)
+        calculatorVC.coordinator = self
+        
+        navigationController.setViewControllers([exchangeRateVC, calculatorVC], animated: false)
     }
     
     func showAlert(
@@ -45,7 +97,7 @@ final class MainCoordinator: Coordinator {
             message: message,
             preferredStyle: .alert
         )
-        alert.addAction(UIAlertAction(title: "확인", style: .default) { _ in 
+        alert.addAction(UIAlertAction(title: "확인", style: .default) { _ in
             completion?()
         })
         navigationController.present(alert, animated: true)

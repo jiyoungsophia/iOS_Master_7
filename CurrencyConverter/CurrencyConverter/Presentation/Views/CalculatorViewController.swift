@@ -14,7 +14,7 @@ class CalculatorViewController: UIViewController {
     // MARK: - Properties
     
     weak var coordinator: MainCoordinator?
-    private let viewModel: CalculatorViewModel
+    internal let viewModel: CalculatorViewModel
     
     // MARK: - UI Components
     
@@ -62,8 +62,8 @@ class CalculatorViewController: UIViewController {
     
     // MARK: - Initializer
     
-    init(exchangeRate: ExchangeRate) {
-        self.viewModel = CalculatorViewModel(exchangeRate: exchangeRate)
+    init(viewModel: CalculatorViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     

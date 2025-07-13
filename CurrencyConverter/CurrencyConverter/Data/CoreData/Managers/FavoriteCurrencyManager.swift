@@ -11,7 +11,7 @@ import CoreData
 protocol FavoriteCurrencyManagerProtocol: AnyObject {
     func addFavorite(_ currencyCode: String) // Create
     func loadFavoriteCurrencies() -> Set<String> // Read
-    func removeFavorite(_ currencyCode: String)
+    func removeFavorite(_ currencyCode: String) // Delete
 }
 
 final class FavoriteCurrencyManager: FavoriteCurrencyManagerProtocol {
@@ -23,7 +23,7 @@ final class FavoriteCurrencyManager: FavoriteCurrencyManagerProtocol {
         return CoreDataManager.shared.context
     }
     
-    // MARK: - CRUD
+    // MARK: - CRD
     
     /// Create
     func addFavorite(_ currencyCode: String) {

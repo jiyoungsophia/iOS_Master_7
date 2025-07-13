@@ -24,7 +24,7 @@ final class ExchangeRateRecordManager: ExchangeRateRecordManagerProtocol {
         return CoreDataManager.shared.context
     }
     
-    // MARK: - CRUD
+    // MARK: - CRD
     
     /// Create
     func saveRecords(
@@ -45,7 +45,7 @@ final class ExchangeRateRecordManager: ExchangeRateRecordManagerProtocol {
             )
         }
         
-        saveContext()
+        CoreDataManager.shared.saveContext()
     }
     
     /// Read
@@ -126,9 +126,4 @@ final class ExchangeRateRecordManager: ExchangeRateRecordManagerProtocol {
             print("캐시 삭제 실패: \(error)")
         }
     }
-    
-    private func saveContext() {
-        CoreDataManager.shared.saveContext()
-    }
-    
 }
