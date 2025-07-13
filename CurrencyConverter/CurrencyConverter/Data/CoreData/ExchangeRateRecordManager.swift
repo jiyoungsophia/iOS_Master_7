@@ -25,6 +25,7 @@ final class ExchangeRateRecordManager: ExchangeRateRecordManagerProtocol {
     }
     
     // MARK: - CRUD
+    
     /// Create
     func saveRecords(
         rates: [String: Double],
@@ -56,11 +57,10 @@ final class ExchangeRateRecordManager: ExchangeRateRecordManagerProtocol {
         do {
             let records = try context.fetch(request)
             
-            // 🔥 저장된 데이터가 없으면 Mock 시간 사용
+            // 저장된 데이터가 없으면 Mock 시간 사용
             if let lastTime = records.first?.lastUpdateTime {
                 return lastTime
             } else {
-                print("💾 저장된 시간 없음 - Mock 시간 사용")
                 return MockDataManager.shared.getMockUpdateTime()
             }
         } catch {
@@ -78,7 +78,6 @@ final class ExchangeRateRecordManager: ExchangeRateRecordManagerProtocol {
             
             // 저장된 데이터가 없으면 Mock 데이터 사용
             if records.isEmpty {
-                print("💾 저장된 데이터 없음 - Mock 데이터 사용")
                 return MockDataManager.shared.loadMockExchangeRates() ?? [:]
             }
             

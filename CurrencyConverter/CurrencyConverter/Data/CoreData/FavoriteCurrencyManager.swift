@@ -24,6 +24,7 @@ final class FavoriteCurrencyManager: FavoriteCurrencyManagerProtocol {
     }
     
     // MARK: - CRUD
+    
     /// Create
     func addFavorite(_ currencyCode: String) {
         // 이미 존재하는지 확인
@@ -39,8 +40,6 @@ final class FavoriteCurrencyManager: FavoriteCurrencyManagerProtocol {
     /// Read
     func loadFavoriteCurrencies() -> Set<String> {
         let currencyCodes = FavoriteCurrency.fetchAllCurrencyCodes(context: context)
-        print("📱 CoreData에서 로드된 즐겨찾기: \(currencyCodes)")
-
         return Set(currencyCodes)
     }
     

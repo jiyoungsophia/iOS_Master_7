@@ -14,14 +14,13 @@ final class CoreDataManager {
     private init() {}
     
     // MARK: - Core Data Stack
+    
     lazy var persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "CurrencyConverter")
         container.loadPersistentStores { _, error in
             if let error = error {
                 print("❌ CoreData 로드 실패: \(error)")
-            } else {
-                print("✅ CoreData 로드 성공")
-            }
+            } 
         }
         return container
     }()
@@ -31,11 +30,11 @@ final class CoreDataManager {
     }
     
     // MARK: - Save Context
+    
     func saveContext() {
         if context.hasChanges {
             do {
                 try context.save()
-                print("💾 CoreData 저장 성공")
             } catch {
                 print("❌ CoreData 저장 실패: \(error)")
             }
