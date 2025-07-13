@@ -8,6 +8,6 @@
 import Foundation
 
 enum ScreenType: String, CaseIterable {
-    case exchangeRateTable = "exchangeRateTable"
+    case exchangeRateList = "exchangeRateTable"
     case calculator = "calculator"
 }
