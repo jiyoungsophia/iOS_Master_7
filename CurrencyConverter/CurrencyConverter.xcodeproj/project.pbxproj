@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		B584C8B02E17F40A00EBEECE /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = B584C8AF2E17F40A00EBEECE /* SnapKit */; };
 		B584C8B32E17F41300EBEECE /* Then in Frameworks */ = {isa = PBXBuildFile; productRef = B584C8B22E17F41300EBEECE /* Then */; };
+		B5BEF02A2E23FC19006B1555 /* DebugSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B5BEF0292E23FC19006B1555 /* DebugSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +44,7 @@
 			files = (
 				B584C8B02E17F40A00EBEECE /* SnapKit in Frameworks */,
 				B584C8B32E17F41300EBEECE /* Then in Frameworks */,
+				B5BEF02A2E23FC19006B1555 /* DebugSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -87,6 +89,7 @@
 			packageProductDependencies = (
 				B584C8AF2E17F40A00EBEECE /* SnapKit */,
 				B584C8B22E17F41300EBEECE /* Then */,
+				B5BEF0292E23FC19006B1555 /* DebugSwift */,
 			);
 			productName = CurrencyConverter;
 			productReference = B584C87E2E17F25800EBEECE /* CurrencyConverter.app */;
@@ -119,6 +122,7 @@
 			packageReferences = (
 				B584C8AE2E17F40A00EBEECE /* XCRemoteSwiftPackageReference "SnapKit" */,
 				B584C8B12E17F41300EBEECE /* XCRemoteSwiftPackageReference "Then" */,
+				B5BEF0282E23FC19006B1555 /* XCRemoteSwiftPackageReference "DebugSwift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B584C87F2E17F25800EBEECE /* Products */;
@@ -376,6 +380,14 @@
 				minimumVersion = 3.0.0;
 			};
 		};
+		B5BEF0282E23FC19006B1555 /* XCRemoteSwiftPackageReference "DebugSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/DebugSwift/DebugSwift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.7.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -388,6 +400,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B584C8B12E17F41300EBEECE /* XCRemoteSwiftPackageReference "Then" */;
 			productName = Then;
+		};
+		B5BEF0292E23FC19006B1555 /* DebugSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B5BEF0282E23FC19006B1555 /* XCRemoteSwiftPackageReference "DebugSwift" */;
+			productName = DebugSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
