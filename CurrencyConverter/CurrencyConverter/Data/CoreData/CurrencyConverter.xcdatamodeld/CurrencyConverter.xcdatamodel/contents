@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23788.4" systemVersion="24F74" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="AppState" representedClassName="AppState" syncable="YES">
+        <attribute name="lastCurrency" attributeType="String"/>
+        <attribute name="lastScreen" optional="YES" attributeType="String"/>
+    </entity>
     <entity name="ExchangeRateRecord" representedClassName="ExchangeRateRecord" syncable="YES">
         <attribute name="currencyCode" attributeType="String"/>
         <attribute name="lastUpdateTime" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
