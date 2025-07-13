@@ -17,6 +17,7 @@ struct ExchangeRateState {
     var allExchangeRates: [ExchangeRate]
     var filteredExchangeRates: [ExchangeRate]
     var favoriteCurrencies: Set<String>
+    var exchangeRateTrends: [String: TrendDirection] = [:]
     var currentSearchText: String
     var errorMessage: String?
     
@@ -32,7 +33,8 @@ struct ExchangeRateState {
 class ExchangeRateViewModel: ViewModelProtocol {
     
     private let exchangeRateService: ExchangeRateService
-    private let favoriteCurrencyManager: FavoriteCurrencyManagerProtocol 
+    private let favoriteCurrencyManager: FavoriteCurrencyManagerProtocol
+    private let recordManager: ExchangeRateRecordManagerProtocol
     
     typealias Action = ExchangeRateAction
     typealias State = ExchangeRateState
@@ -49,10 +51,12 @@ class ExchangeRateViewModel: ViewModelProtocol {
     
     init(
         exchangeRateService: ExchangeRateService = ExchangeRateService(),
-        favoriteCurrencyManager: FavoriteCurrencyManagerProtocol = FavoriteCurrencyManager.shared
+        favoriteCurrencyManager: FavoriteCurrencyManagerProtocol = FavoriteCurrencyManager.shared,
+        recordManager: ExchangeRateRecordManagerProtocol = ExchangeRateRecordManager.shared
     ) {
         self.exchangeRateService = exchangeRateService
         self.favoriteCurrencyManager = favoriteCurrencyManager
+        self.recordManager = recordManager
         self.state = ExchangeRateState()
         
         loadFavoritesFromCoreData()
@@ -78,9 +82,32 @@ class ExchangeRateViewModel: ViewModelProtocol {
         
         exchangeRateService.fetchExchangeRate { [weak self] result in
             switch result {
-            case .success(let rates):
-                self?.state.allExchangeRates = rates
-                self?.state.filteredExchangeRates = self?.sortExchangeRates(rates) ?? []
+            case .success(let response):
+                let newUpdateTime = response.timeLastUpdateUnix
+                let lastSavedTime = self?.recordManager.getLastUpdateTime()
+                
+                if newUpdateTime == lastSavedTime {
+                    // 같은 시간 -> 저장된 트렌드 사용
+                    let trendRecords = self?.recordManager.getTrendRecords() ?? [:]
+                    self?.state.exchangeRateTrends = trendRecords
+                } else {
+                    // 다른 시간 -> 비교 후 새 트렌드 계산
+                    let oldRates = self?.recordManager.getLastRates() ?? [:]
+                    let newRates = response.rates
+                    let newTrends = self?.calculateTrends(old: oldRates, new: newRates) ?? [:]
+                    
+                    self?.state.exchangeRateTrends = newTrends
+                    
+                    // 새 데이터와 트렌드 저장
+                    self?.recordManager.saveRecords(
+                        rates: newRates,
+                        trends: newTrends,
+                        updateTime: newUpdateTime
+                    )
+                }
+                
+                self?.state.allExchangeRates = response.toExchangeRates()
+                self?.state.filteredExchangeRates = self?.sortExchangeRates(response.toExchangeRates()) ?? []
                 
             case .failure(let error):
                 self?.state.errorMessage = error.localizedDescription
@@ -104,15 +131,6 @@ class ExchangeRateViewModel: ViewModelProtocol {
         state.filteredExchangeRates = sortExchangeRates(baseRates)
     }
     
-    private func sortExchangeRates(_ rates: [ExchangeRate]) -> [ExchangeRate] {
-        return rates.sorted {
-            if isFavorite($0.currency) != isFavorite($1.currency) {
-                return isFavorite($0.currency)
-            }
-            return $0.currency < $1.currency
-        }
-    }
-    
     func toggleFavorite(_ currency: String) {
         if isFavorite(currency) {
             favoriteCurrencyManager.removeFavorite(currency)
@@ -125,12 +143,45 @@ class ExchangeRateViewModel: ViewModelProtocol {
         filterExchangeRates(with: state.currentSearchText)
     }
     
+    func isFavorite(_ currency: String) -> Bool {
+        return state.favoriteCurrencies.contains(currency)
+    }
+    
+    
+    private func sortExchangeRates(_ rates: [ExchangeRate]) -> [ExchangeRate] {
+        return rates.sorted {
+            if isFavorite($0.currency) != isFavorite($1.currency) {
+                return isFavorite($0.currency)
+            }
+            return $0.currency < $1.currency
+        }
+    }
+    
     private func loadFavoritesFromCoreData() {
         let savedFavorites = favoriteCurrencyManager.loadFavoriteCurrencies()
         state.favoriteCurrencies = savedFavorites
     }
     
-    func isFavorite(_ currency: String) -> Bool {
-        return state.favoriteCurrencies.contains(currency)
+    private func calculateTrends(old: [String: Double], new: [String: Double]) -> [String: TrendDirection] {
+        var trends: [String: TrendDirection] = [:]
+        
+        for (currency, newRate) in new {
+            guard let oldRate = old[currency] else {
+                trends[currency] = TrendDirection.none
+                continue
+            }
+            
+            let difference = newRate - oldRate
+            
+            if abs(difference) <= 0.00001 {
+                trends[currency] = TrendDirection.none
+            } else if difference > 0 {
+                trends[currency] = .up
+            } else {
+                trends[currency] = .down
+            }
+        }
+        
+        return trends
     }
 }

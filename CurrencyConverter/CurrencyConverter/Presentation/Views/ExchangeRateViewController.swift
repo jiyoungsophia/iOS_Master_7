@@ -146,10 +146,10 @@ extension ExchangeRateViewController: UITableViewDataSource {
         }
         
         let exchangeRate = viewModel.state.filteredExchangeRates[indexPath.row]
-        
         let isFavorite = viewModel.isFavorite(exchangeRate.currency)
+        let trend = viewModel.state.exchangeRateTrends[exchangeRate.currency] ?? .none
               
-        cell.configure(exchangeRate, isFavorite: isFavorite)
+        cell.configure(exchangeRate, isFavorite: isFavorite, trend: trend)
         
         cell.onFavoriteButtonTapped = { [weak self] currency in
             self?.viewModel.action?(.toggleFavorite(currency))

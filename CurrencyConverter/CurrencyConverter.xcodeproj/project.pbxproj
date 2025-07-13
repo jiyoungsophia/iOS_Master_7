@@ -9,14 +9,10 @@
 /* Begin PBXBuildFile section */
 		B584C8B02E17F40A00EBEECE /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = B584C8AF2E17F40A00EBEECE /* SnapKit */; };
 		B584C8B32E17F41300EBEECE /* Then in Frameworks */ = {isa = PBXBuildFile; productRef = B584C8B22E17F41300EBEECE /* Then */; };
-		B584CDC92E213AB800EBEECE /* FavoriteCurrency+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B584CDC82E213AB800EBEECE /* FavoriteCurrency+CoreDataProperties.swift */; };
-		B584CDCA2E213AB800EBEECE /* FavoriteCurrency+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B584CDC72E213AB800EBEECE /* FavoriteCurrency+CoreDataClass.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		B584C87E2E17F25800EBEECE /* CurrencyConverter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CurrencyConverter.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		B584CDC72E213AB800EBEECE /* FavoriteCurrency+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FavoriteCurrency+CoreDataClass.swift"; sourceTree = "<group>"; };
-		B584CDC82E213AB800EBEECE /* FavoriteCurrency+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FavoriteCurrency+CoreDataProperties.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -56,8 +52,6 @@
 		B584C8752E17F25800EBEECE = {
 			isa = PBXGroup;
 			children = (
-				B584CDC72E213AB800EBEECE /* FavoriteCurrency+CoreDataClass.swift */,
-				B584CDC82E213AB800EBEECE /* FavoriteCurrency+CoreDataProperties.swift */,
 				B584C8802E17F25800EBEECE /* CurrencyConverter */,
 				B584C87F2E17F25800EBEECE /* Products */,
 			);
@@ -151,8 +145,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B584CDC92E213AB800EBEECE /* FavoriteCurrency+CoreDataProperties.swift in Sources */,
-				B584CDCA2E213AB800EBEECE /* FavoriteCurrency+CoreDataClass.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

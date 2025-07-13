@@ -14,28 +14,17 @@ protocol FavoriteCurrencyManagerProtocol: AnyObject {
     func removeFavorite(_ currencyCode: String)
 }
 
-class FavoriteCurrencyManager: FavoriteCurrencyManagerProtocol {
-    
-    // MARK: - Core Data Stack
-    private lazy var persistentContainer: NSPersistentContainer = {
-        let container = NSPersistentContainer(name: "CurrencyConverter")
-        container.loadPersistentStores(completionHandler: { _, error in
-            if let error = error as NSError? {
-                print("CoreData 로드 실패: \(error), \(error.userInfo)")
-            }
-        })
-        return container
-    }()
-    
-    private var context: NSManagedObjectContext {
-        return persistentContainer.viewContext
-    }
+final class FavoriteCurrencyManager: FavoriteCurrencyManagerProtocol {
     
     static let shared = FavoriteCurrencyManager()
     private init() {}
     
+    private var context: NSManagedObjectContext {
+        return CoreDataManager.shared.context
+    }
     
     // MARK: - CRUD
+    
     /// Create
     func addFavorite(_ currencyCode: String) {
         // 이미 존재하는지 확인
@@ -51,8 +40,6 @@ class FavoriteCurrencyManager: FavoriteCurrencyManagerProtocol {
     /// Read
     func loadFavoriteCurrencies() -> Set<String> {
         let currencyCodes = FavoriteCurrency.fetchAllCurrencyCodes(context: context)
-        print("📱 CoreData에서 로드된 즐겨찾기: \(currencyCodes)")
-
         return Set(currencyCodes)
     }
     
@@ -72,13 +59,6 @@ class FavoriteCurrencyManager: FavoriteCurrencyManagerProtocol {
     }
     
     private func saveContext() {
-        if context.hasChanges {
-            do {
-                try context.save()
-                print("💾 CoreData 저장 성공")
-            } catch {
-                print("❌ CoreData 저장 실패: \(error)")
-            }
-        }
+        CoreDataManager.shared.saveContext()
     }
 }

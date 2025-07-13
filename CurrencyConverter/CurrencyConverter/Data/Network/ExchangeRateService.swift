@@ -9,11 +9,11 @@ import Foundation
 
 final class ExchangeRateService {
     private let networkClient = NetworkClient.shared
-    private let baseURL = "https://api.exchangerate-api.com/v4/latest"
+    private let baseURL = "https://open.er-api.com/v6/latest"
     
     func fetchExchangeRate(
         baseCurrency: String = "KRW",
-        completion: @escaping (Result<[ExchangeRate], NetworkError>) -> Void
+        completion: @escaping (Result<ExchangeRateResponse, NetworkError>) -> Void
     ) {
         guard let url = URL(string: "\(baseURL)/\(baseCurrency)") else {
             completion(.failure(.httpResponseError))
@@ -23,8 +23,7 @@ final class ExchangeRateService {
         networkClient.fetchData(url: url) { (result: Result<ExchangeRateResponse, NetworkError>) in
             switch result {
             case .success(let response):
-                let exchangeRates = response.toExchangeRates()
-                completion(.success(exchangeRates))
+                completion(.success(response))
                 
             case .failure(let error):
                 completion(.failure(error))

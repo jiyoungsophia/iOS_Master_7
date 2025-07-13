@@ -33,6 +33,12 @@ class ExchangeRateTableViewCell: UITableViewCell {
         $0.textAlignment = .right
     }
     
+    private let trendLabel = UILabel().then {
+        $0.font = .systemFont(ofSize: 14)
+        $0.textAlignment = .center
+        $0.text = ""
+    }
+    
     private let favoriteButton = UIButton().then {
         $0.setImage(UIImage(systemName: "star"), for: .normal)
         $0.setImage(UIImage(systemName: "star.fill"), for: .selected)
@@ -58,37 +64,41 @@ class ExchangeRateTableViewCell: UITableViewCell {
         labelVStackView.addArrangedSubview(currencyLabel)
         labelVStackView.addArrangedSubview(countryLabel)
         
-        contentView.addSubview(labelVStackView)
-        contentView.addSubview(rateLabel)
-        contentView.addSubview(favoriteButton)
+        [labelVStackView, trendLabel, rateLabel, favoriteButton]
+            .forEach { contentView.addSubview($0) }
         
         labelVStackView.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(16)
             $0.centerY.equalToSuperview()
         }
         
+        trendLabel.snp.makeConstraints {
+            $0.trailing.equalTo(favoriteButton.snp.leading).offset(-8)
+            $0.centerY.equalToSuperview()
+            $0.width.equalTo(20)
+        }
+        
         rateLabel.snp.makeConstraints {
-            $0.trailing.equalTo(favoriteButton.snp.leading).offset(-16)
+            $0.trailing.equalTo(trendLabel.snp.leading).offset(-8)
             $0.centerY.equalToSuperview()
             $0.leading.greaterThanOrEqualTo(labelVStackView.snp.trailing).offset(16)
             $0.width.equalTo(120)
         }
         
         favoriteButton.snp.makeConstraints {
-            $0.leading.equalTo(rateLabel.snp.trailing).offset(16)
             $0.trailing.equalToSuperview().inset(16)
             $0.centerY.equalToSuperview()
             $0.width.height.equalTo(24)
         }
-        
     }
     
-    func configure(_ exchangeRate: ExchangeRate, isFavorite: Bool = false) {
+    func configure(_ exchangeRate: ExchangeRate, isFavorite: Bool = false, trend: TrendDirection = .none) {
         self.exchangeRate = exchangeRate
         currencyLabel.text = exchangeRate.currency
         rateLabel.text = "\(rate: exchangeRate.rate)"
         countryLabel.text = exchangeRate.country
         favoriteButton.isSelected = isFavorite
+        trendLabel.text = trend.icon
     }
     
     private func setupAction() {
