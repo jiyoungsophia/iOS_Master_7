@@ -1,6 +1,15 @@
 {
-  "originHash" : "0cd11a4ea344b95c25e88fb39b351003de5b41040e76927e86f0f8b8a4edc7a3",
+  "originHash" : "26ffb23516240e051af76a2f44d4e675cde3fc3c5d26e83a9f4491bd9ffce473",
   "pins" : [
+    {
+      "identity" : "debugswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/DebugSwift/DebugSwift.git",
+      "state" : {
+        "revision" : "d5d765e144e6b8077de7eeb3eecd5595f3fc0789",
+        "version" : "1.7.0"
+      }
+    },
     {
       "identity" : "snapkit",
       "kind" : "remoteSourceControl",
