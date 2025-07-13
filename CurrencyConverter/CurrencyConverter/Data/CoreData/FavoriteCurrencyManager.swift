@@ -14,7 +14,7 @@ protocol FavoriteCurrencyManagerProtocol: AnyObject {
     func removeFavorite(_ currencyCode: String)
 }
 
-class FavoriteCurrencyManager: FavoriteCurrencyManagerProtocol {
+final class FavoriteCurrencyManager: FavoriteCurrencyManagerProtocol {
     
     // MARK: - Core Data Stack
     private lazy var persistentContainer: NSPersistentContainer = {
