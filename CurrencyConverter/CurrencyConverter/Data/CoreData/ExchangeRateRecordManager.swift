@@ -17,22 +17,12 @@ protocol ExchangeRateRecordManagerProtocol {
 
 final class ExchangeRateRecordManager: ExchangeRateRecordManagerProtocol {
     
-    private lazy var persistentContainer: NSPersistentContainer = {
-        let container = NSPersistentContainer(name: "CurrencyConverter")
-        container.loadPersistentStores { _, error in
-            if let error = error {
-                print("CoreData 로드 실패: \(error)")
-            }
-        }
-        return container
-    }()
-    
-    private var context: NSManagedObjectContext {
-        return persistentContainer.viewContext
-    }
-    
     static let shared = ExchangeRateRecordManager()
     private init() {}
+    
+    private var context: NSManagedObjectContext {
+        return CoreDataManager.shared.context
+    }
     
     // MARK: - CRUD
     /// Create
@@ -65,7 +55,14 @@ final class ExchangeRateRecordManager: ExchangeRateRecordManagerProtocol {
         
         do {
             let records = try context.fetch(request)
-            return records.first?.lastUpdateTime
+            
+            // 🔥 저장된 데이터가 없으면 Mock 시간 사용
+            if let lastTime = records.first?.lastUpdateTime {
+                return lastTime
+            } else {
+                print("💾 저장된 시간 없음 - Mock 시간 사용")
+                return MockDataManager.shared.getMockUpdateTime()
+            }
         } catch {
             print("업데이트 시간 조회 실패: \(error)")
             return nil
@@ -75,20 +72,26 @@ final class ExchangeRateRecordManager: ExchangeRateRecordManagerProtocol {
     /// Read
     func getLastRates() -> [String : Double] {
         let request = ExchangeRateRecord.fetchRequest()
-         
-         do {
-             let records = try context.fetch(request)
-             var rates: [String: Double] = [:]
-             
-             for record in records {
-                 rates[record.currencyCode ?? ""] = record.rate
-             }
-             
-             return rates
-         } catch {
-             print("환율 조회 실패: \(error)")
-             return [:]
-         }
+        
+        do {
+            let records = try context.fetch(request)
+            
+            // 저장된 데이터가 없으면 Mock 데이터 사용
+            if records.isEmpty {
+                print("💾 저장된 데이터 없음 - Mock 데이터 사용")
+                return MockDataManager.shared.loadMockExchangeRates() ?? [:]
+            }
+            
+            var rates: [String: Double] = [:]
+            for record in records {
+                rates[record.currencyCode ?? ""] = record.rate
+            }
+            
+            return rates
+        } catch {
+            print("환율 조회 실패: \(error)")
+            return [:]
+        }
     }
     
     /// Read
@@ -126,14 +129,7 @@ final class ExchangeRateRecordManager: ExchangeRateRecordManagerProtocol {
     }
     
     private func saveContext() {
-        if context.hasChanges {
-            do {
-                try context.save()
-                print("💾 환율 캐시 저장 성공")
-            } catch {
-                print("❌ 환율 캐시 저장 실패: \(error)")
-            }
-        }
+        CoreDataManager.shared.saveContext()
     }
     
 }

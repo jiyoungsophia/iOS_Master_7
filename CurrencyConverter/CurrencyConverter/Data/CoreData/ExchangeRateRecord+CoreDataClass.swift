@@ -11,7 +11,6 @@ import CoreData
 
 @objc(ExchangeRateRecord)
 public class ExchangeRateRecord: NSManagedObject {
-    
     convenience init(
             currencyCode: String,
             rate: Double,
@@ -25,4 +24,5 @@ public class ExchangeRateRecord: NSManagedObject {
             self.trend = trend.rawValue
             self.lastUpdateTime = lastUpdateTime
         }
+
 }

@@ -16,24 +16,12 @@ protocol FavoriteCurrencyManagerProtocol: AnyObject {
 
 final class FavoriteCurrencyManager: FavoriteCurrencyManagerProtocol {
     
-    // MARK: - Core Data Stack
-    private lazy var persistentContainer: NSPersistentContainer = {
-        let container = NSPersistentContainer(name: "CurrencyConverter")
-        container.loadPersistentStores(completionHandler: { _, error in
-            if let error = error as NSError? {
-                print("CoreData 로드 실패: \(error), \(error.userInfo)")
-            }
-        })
-        return container
-    }()
-    
-    private var context: NSManagedObjectContext {
-        return persistentContainer.viewContext
-    }
-    
     static let shared = FavoriteCurrencyManager()
     private init() {}
     
+    private var context: NSManagedObjectContext {
+        return CoreDataManager.shared.context
+    }
     
     // MARK: - CRUD
     /// Create
@@ -72,13 +60,6 @@ final class FavoriteCurrencyManager: FavoriteCurrencyManagerProtocol {
     }
     
     private func saveContext() {
-        if context.hasChanges {
-            do {
-                try context.save()
-                print("💾 CoreData 저장 성공")
-            } catch {
-                print("❌ CoreData 저장 실패: \(error)")
-            }
-        }
+        CoreDataManager.shared.saveContext()
     }
 }
