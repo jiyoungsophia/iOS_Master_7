@@ -1,5 +1,5 @@
 //
-//  AppCoordinator.swift
+//  MainCoordinator.swift
 //  CurrencyConverter
 //
 //  Created by Milou on 7/10/25.
