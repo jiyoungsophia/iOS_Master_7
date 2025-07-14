@@ -42,7 +42,7 @@ Test Layer
 ```
 
 ## 🏗️ Clean Architecture 적용 과정과 의도
-단순한 JSON 파일 읽기 앱이지만, **"변화에 대응할 수 있는 구조"**를 목표로 설계했습니다.
+단순한 JSON 파일 읽기 앱이지만, **변화에 대응할 수 있는 구조**를 목표로 설계했습니다.
 
 ### 해결하고자 한 문제들
 - 데이터 소스 변경: JSON 파일 → 서버 API로 쉽게 전환, 데이터베이스 전환 시 ViewModel/ViewController 변경 없이 BookRepositoryImp만 수정
@@ -67,13 +67,13 @@ Test Layer
 ## 📈 개발 과정
 
 ### 단계별 구현 (LV1-LV7)
-Lv1: 기본 책 제목 및 시리즈 순서 표시\n
-Lv2: 책 정보 영역 구성 (StackView 활용)\n
-Lv3: Dedication과 Summary 영역 추가\n
-Lv4: UIScrollView 및 목차 구성\n
-Lv5: Summary 접기/더보기 기능 + 상태 저장\n
-Lv6: 시리즈 전체(7권) 선택 기능\n
-Lv7: 다양한 디바이스 및 방향 대응\n
+- Lv1: 기본 책 제목 및 시리즈 순서 표시
+- Lv2: 책 정보 영역 구성 (StackView 활용)
+- Lv3: Dedication과 Summary 영역 추가
+- Lv4: UIScrollView 및 목차 구성
+- Lv5: Summary 접기/더보기 기능 + 상태 저장
+- Lv6: 시리즈 전체(7권) 선택 기능
+- Lv7: 다양한 디바이스 및 방향 대응
 
 ### 주요 학습 내용
 - Clean Architecture: 계층 분리를 통한 유지보수성 향상
