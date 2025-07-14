@@ -63,6 +63,19 @@ Data Layer
 - ExchangeRateViewModel: 환율 목록, 검색, 즐겨찾기 로직
 - CalculatorViewModel: 환율 계산 로직 및 에러 처리
 
+### 🛠️ 개발 특징
+1. MVVM + Coordinator
+- View와 Business Logic 분리
+- 화면 전환 로직의 중앙화
+- 단방향 데이터 흐름 구현
+- Coordinator를 통한 일관된 Alert 표시
+
+
+2. Memoization 패턴
+- 통화 코드 → 국가명 변환 시 반복적인 JSON 파싱 최적화
+- 첫 번째 호출: JSON 파싱 수행
+- 이후 호출: 메모리 캐시에서 즉시 반환
+- 환율 목록 100+ 개 렌더링 시 JSON 파싱 1회만 발생
 
 ## 📈 개발 과정
 

@@ -13,7 +13,7 @@ struct Constants {
     static let noSearchResult: String = "검색 결과 없음"
     
     static let calculatorTitle: String = "환율 계산기"
-    static let amountPlaceholder: String = "금액을 입력하세요"
+    static let amountPlaceholder: String = "금액(KRW)을 입력하세요"
     static let convertButtonTitle: String = "환율 계산"
     static let resultLabelText: String  =  "계산 결과가 여기에 표시됩니다"
     

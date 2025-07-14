@@ -42,7 +42,6 @@ final class CalculatorViewModel: ViewModelProtocol {
         self.state = CalculatorState(exchangeRate: exchangeRate)
         self.action = { [weak self] action in
             self?.handleAction(action)
-            
         }
     }
     
