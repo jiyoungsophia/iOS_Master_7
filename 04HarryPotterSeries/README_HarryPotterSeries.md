@@ -67,13 +67,13 @@ Test Layer
 ## 📈 개발 과정
 
 ### 단계별 구현 (LV1-LV7)
-Lv1: 기본 책 제목 및 시리즈 순서 표시
-Lv2: 책 정보 영역 구성 (StackView 활용)
-Lv3: Dedication과 Summary 영역 추가
-Lv4: UIScrollView 및 목차 구성
-Lv5: Summary 접기/더보기 기능 + 상태 저장
-Lv6: 시리즈 전체(7권) 선택 기능
-Lv7: 다양한 디바이스 및 방향 대응
+Lv1: 기본 책 제목 및 시리즈 순서 표시\n
+Lv2: 책 정보 영역 구성 (StackView 활용)\n
+Lv3: Dedication과 Summary 영역 추가\n
+Lv4: UIScrollView 및 목차 구성\n
+Lv5: Summary 접기/더보기 기능 + 상태 저장\n
+Lv6: 시리즈 전체(7권) 선택 기능\n
+Lv7: 다양한 디바이스 및 방향 대응\n
 
 ### 주요 학습 내용
 - Clean Architecture: 계층 분리를 통한 유지보수성 향상
