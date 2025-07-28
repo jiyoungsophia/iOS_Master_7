@@ -132,14 +132,14 @@ iOSInjectionProject/
 /*.gcno
 
 ### Xcode Patch ###
-*.xcodeproj/*
 !*.xcodeproj/project.pbxproj
 !*.xcodeproj/xcshareddata/
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
 *.xcconfig
 
-### Firebase ###
-GoogleService-Info.plist
+### SwiftPackageManager ###
+Packages
+xcuserdata
 
 # End of https://www.toptal.com/developers/gitignore/api/swift,xcode,macos,cocoapods
